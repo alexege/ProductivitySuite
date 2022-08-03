@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <header class="jumbotron">
-      <h3>{{content}}</h3>
+      <pre>{{content}}</pre>
     </header>
   </div>
 </template>

@@ -1,20 +1,24 @@
 const mongoose = require("mongoose");
 
-const Message = mongoose.model(
-    "Message",
+const Notebook = mongoose.model(
+    "Notebook",
     new mongoose.Schema({
         title: String,
-        body: String,
+        description: String,
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
-        comments: [{
+        isPublic: { 
+            type: Boolean, 
+            default: false
+        },
+        subject: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Comment'
+            ref: 'Subject'
         }],
     },
-    { timestamps: true})
+    { timestamps: true })
 );
 
-module.exports = Message;
+module.exports = Notebook;

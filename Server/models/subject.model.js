@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 
-const Comment = mongoose.model(
-    "Comment",
+const Subject = mongoose.model(
+    "Subject",
     new mongoose.Schema({
         title: String,
-        body: String,
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
@@ -17,20 +16,12 @@ const Comment = mongoose.model(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Notebook'
         },
-        subject: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Subject'
-        },
-        category: {
+        category: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category'
-        },
-        note: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Note'
-        }
+        }],
     },
     { timestamps: true })
 );
 
-module.exports = Comment;
+module.exports = Subject;
