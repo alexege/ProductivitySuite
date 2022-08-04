@@ -10,7 +10,7 @@ const Category = mongoose.model(
         },
         isPublic: { 
             type: Boolean, 
-            default: false
+            default: true
         },
         notebook: {
             type: mongoose.Schema.Types.ObjectId,

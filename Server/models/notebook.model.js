@@ -11,9 +11,9 @@ const Notebook = mongoose.model(
         },
         isPublic: { 
             type: Boolean, 
-            default: false
+            default: true
         },
-        subject: [{
+        subjects: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Subject'
         }],
