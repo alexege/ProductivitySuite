@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/notebook/";
+const API_URL = "http://localhost:8080/api/category/";
 
-class NotebookService {
-  getAllNotebooks() {
+class CategoryService {
+  getAllCategories() {
     return axios
-      .get(API_URL + "allNotebooks")
+      .get(API_URL + "allCategorys")
       .then((res) => {
         return res;
       })
@@ -14,13 +14,14 @@ class NotebookService {
       });
   }
 
-  addNotebook(notebook) {
+  addCategory(data) {
+    console.log("data:", data);
     const user = JSON.parse(localStorage.getItem("user"));
 
     return axios
-      .post(API_URL + "addNotebook", {
-        title: notebook.title,
-        description: notebook.description,
+      .post(API_URL + "addCategory", {
+        title: data.category.title,
+        notebookId: data.notebookId,
         author: user.id,
         isPublic: true,
       })
@@ -32,12 +33,12 @@ class NotebookService {
       });
   }
 
-  updateNotebook(data) {
+  updateCategory(data) {
     return axios
-      .post(API_URL + "updateNotebook/" + data.id, {
-        title: data.notebook.title,
-        description: data.notebook.description,
-        isPublic: data.notebook.isPublic,
+      .post(API_URL + "updateCategory/" + data.id, {
+        title: data.category.title,
+        description: data.category.description,
+        isPublic: data.category.isPublic,
       })
       .then((res) => {
         return res;
@@ -47,9 +48,9 @@ class NotebookService {
       });
   }
 
-  deleteNotebook(id) {
+  deleteCategory(id) {
     return axios
-      .delete(API_URL + "deleteNotebook/" + id)
+      .delete(API_URL + "deleteCategory/" + id)
       .then((res) => {
         return res;
       })
@@ -59,4 +60,4 @@ class NotebookService {
   }
 }
 
-export default new NotebookService();
+export default new CategoryService();
