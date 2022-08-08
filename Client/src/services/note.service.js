@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/category/";
+const API_URL = "http://localhost:8080/api/note/";
 
-class CategoryService {
-  getAllCategories() {
+class NoteService {
+  getAllNotes() {
     return axios
-      .get(API_URL + "allCategories")
+      .get(API_URL + "allNotes")
       .then((res) => {
         return res;
       })
@@ -14,14 +14,14 @@ class CategoryService {
       });
   }
 
-  addCategory(data) {
+  addNote(data) {
     console.log("data:", data);
     const user = JSON.parse(localStorage.getItem("user"));
 
     return axios
-      .post(API_URL + "addCategory", {
-        title: data.category.title,
-        subjectId: data.subjectId,
+      .post(API_URL + "addNote", {
+        title: data.note.title,
+        categoryId: data.categoryId,
         author: user.id,
         isPublic: true,
       })
@@ -33,12 +33,12 @@ class CategoryService {
       });
   }
 
-  updateCategory(data) {
+  updateNote(data) {
     return axios
-      .post(API_URL + "updateCategory/" + data.id, {
-        title: data.category.title,
-        description: data.category.description,
-        isPublic: data.category.isPublic,
+      .post(API_URL + "updateNote/" + data.id, {
+        title: data.note.title,
+        description: data.note.description,
+        isPublic: data.note.isPublic,
       })
       .then((res) => {
         return res;
@@ -48,9 +48,9 @@ class CategoryService {
       });
   }
 
-  deleteCategory(id) {
+  deleteNote(id) {
     return axios
-      .delete(API_URL + "deleteCategory/" + id)
+      .delete(API_URL + "deleteNote/" + id)
       .then((res) => {
         return res;
       })
@@ -60,4 +60,4 @@ class CategoryService {
   }
 }
 
-export default new CategoryService();
+export default new NoteService();

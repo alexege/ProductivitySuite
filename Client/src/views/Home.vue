@@ -2,22 +2,86 @@
   <div class="container">
     <header class="jumbotron">
 
-<div class="notebook">
+      <div class="sideNav">
+        <div v-for="notebook in allNotebooks" :key="notebook._id">
+          <div class="notebook">
+            {{ notebook.title }}
+            <div v-for="subject in notebook.subjects" :key="subject._id">
+              <div class="subject">
+                {{ subject.title }}
+                <div v-for="category in subject.categories" :key="category._id">
+                  <div class="category">
+                    {{ category.title }}
+                      <div v-for="note in category.notes" :key="note._id">
+                        <div class="note">
+                          {{ note.title }}
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
   <input type="text" v-model="newNotebook.title">
   <input type="text" v-model="newNotebook.description">
   <button @click="addNotebook">Add Notebook</button>
 
-  <div v-for="notebook in allNotebooks" :key="notebook._id">
-    <pre>{{ notebook }}</pre>
+<div class="notebook">
 
+  <div v-for="notebook in allNotebooks" :key="notebook._id">
+    <pre>{{ notebook.title }}</pre>
 
     <!-- Subject Start -->
     <div class="subject">
       <input type="text" v-model="newSubject.title">
       <button @click="addSubject(notebook._id)">Add Subject</button>
 
-      <div v-for="subject in allSubjects" :key="subject._id">
-        <pre>{{ subject }}</pre>
+      <div v-for="subject in notebook.subjects" :key="subject._id">
+      {{ subject.title }}
+
+      <!-- Category Start -->
+        <div class="category">
+        <input type="text" v-model="newCategory.title">
+        <button @click="addCategory(subject._id)">Add Category</button>
+
+        <div v-for="category in subject.categories" :key="category._id">
+          {{ category.title }}
+          <pre>{{ category }}</pre>
+
+
+            <!-- Note Start -->
+            <div class="note">
+              <input type="text" v-model="newNote.title">
+              <button @click="addNote(category._id)">Add Note</button>
+
+              <div v-for="note in category.notes" :key="note._id">
+                {{ note.title }}
+
+                <button @click="editNote(note)">edit</button>
+
+                <input type="text" v-model="note.title">
+                <input type="checkbox" v-model="note.isPublic">
+                <button @click="updateNote(note)">update</button>
+                <button @click="deleteNote(note._id)">delete</button>
+              </div>
+            </div>
+            <!-- Note End       -->
+
+
+          <button @click="editCategory(category)">edit</button>
+
+          <input type="text" v-model="category.title">
+          <input type="checkbox" v-model="category.isPublic">
+          <button @click="updateCategory(category)">update</button>
+          <button @click="deleteCategory(category._id)">delete</button>
+        </div>
+      </div>
+      <!-- Category End       -->
+
+
         <button @click="editSubject(subject)">edit</button>
 
         <input type="text" v-model="subject.title">
@@ -62,6 +126,19 @@ export default {
 
       newSubject: {
         title: null,
+      },
+
+      allCategories: null,
+
+      newCategory: {
+        title: null,
+      },
+
+      allNotes: null,
+
+      newNote: {
+        title: null,
+        body: null,
       }
     };
   },
@@ -75,6 +152,8 @@ export default {
         this.newNotebook.title = '',
         this.newNotebook.description = '',
         this.getAllNotebooks();
+        this.getAllSubjects();
+        this.getAllCategories();
       })
       .catch((err) => {
         console.log("Error adding notebook: ", err);
@@ -127,7 +206,7 @@ export default {
       )
       .then(() => {
         this.newSubject.title = '',
-        this.getAllSubjects();
+        this.getAllNotebooks();
       })
       .catch((err) => {
         console.log("Error adding subject: ", err);
@@ -174,13 +253,14 @@ export default {
     },
 
     
-    addCategory(notebookId) {
+    addCategory(subjectId) {
       return this.$store.dispatch(
-        "category/addCategory", { category: this.newCategory, notebookId }
+        "category/addCategory", { category: this.newCategory, subjectId }
       )
       .then(() => {
-        this.newCategory.title = '',
-        this.getAllCategorys();
+        this.newCategory.title = ''
+        // this.getAllCategories();
+        this.getAllNotebooks();
       })
       .catch((err) => {
         console.log("Error adding category: ", err);
@@ -203,29 +283,80 @@ export default {
       //Toggle editMode if using a modal
       return this.$store.dispatch('category/updateCategory' , { id:category._id, category: updateCategory })
       .then(() => {
-        this.getAllCategorys();
+        this.getAllCategories();
       });
     },
 
     deleteCategory(id) {
       return this.$store.dispatch('category/deleteCategory', id)
       .then(() => {
-        this.getAllCategorys();
+        this.getAllCategories();
       })
       .catch((err) => {
         console.log(err);
       })
     },
 
-    getAllCategorys() {
+    getAllCategories() {
       return this.$store.dispatch(
-        "category/allCategorys"
+        "category/allCategories"
       )
       .then((res) => {
-        this.allCategorys = res.data.categorys;
+        this.allCategories = res.data.categories;
       })
-    }
+    },
 
+
+    addNote(categoryId) {
+      return this.$store.dispatch(
+        "note/addNote", { note: this.newNote, categoryId }
+      )
+      .then(() => {
+        this.newNote.title = '';
+      })
+      .catch((err) => {
+        console.log("Error adding note: ", err);
+      })
+    },
+
+    editNote(note) {
+      this.noteToEdit.title = note.title;
+      this.noteToEdit.description = note.description;
+    },
+
+    updateNote(note) {
+      // console.log("updating wtih id: ", id);
+      let updateNote = {
+        title: note.title,
+        body: note.body,
+        isPublic: note.isPublic
+      }
+
+      //Toggle editMode if using a modal
+      return this.$store.dispatch('note/updateNote' , { id:note._id, note: updateNote })
+      .then(() => {
+        // this.getAllNotes();
+      });
+    },
+
+    deleteNote(id) {
+      return this.$store.dispatch('note/deleteNote', id)
+      .then(() => {
+        // this.getAllNotes();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+    },
+
+    // getAllNotes() {
+    //   return this.$store.dispatch(
+    //     "note/allNotes"
+    //   )
+    //   .then((res) => {
+    //     this.allNotes = res.data.categories;
+    //   })
+    // }
 
 
 
@@ -234,6 +365,8 @@ export default {
   mounted() {
     this.getAllNotebooks();
     this.getAllSubjects();
+    this.getAllCategories();
+    // this.getAllNotes();
 
     UserService.getPublicContent().then(
       response => {
@@ -249,3 +382,28 @@ export default {
   }
 };
 </script>
+<style scoped>
+  .notebook {
+    border: 2px solid black;
+    padding: 5px;
+    width: 100%;
+  }
+
+  .subject {
+    border: 2px solid red;
+    padding: 5px;
+    width: 100%;
+  }
+
+.category {
+    border: 2px solid lime;
+    padding: 5px;
+    width: 100%;
+  }
+
+.note {
+    border: 2px solid yellow;
+    padding: 5px;
+    width: 100%;
+  }
+</style>

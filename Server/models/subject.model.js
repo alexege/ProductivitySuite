@@ -16,7 +16,7 @@ const Subject = mongoose.model(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Notebook'
         },
-        category: [{
+        categories: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category'
         }],

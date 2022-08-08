@@ -1,33 +1,30 @@
 const db = require("../models");
 const Notebook = require("../models/notebook.model");
+const Subject = require("../models/subject.model");
 const User = require("../models/user.model");
-const Subject = db.subject;
+const Category = db.category;
 
-exports.allSubjects = (req, res) => {
-  Subject.find({}, (err, subjects) => {
+exports.allCategories = (req, res) => {
+  Category.find({}, (err, category) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
-    res.status(200).send({ subjects });
+    res.status(200).send({ category });
   })
-  .populate("categories")
+//   .populate("comments")
   .sort([["createdAt", "descending"]]);
 };
 
-exports.addSubject = (req, res) => {
-
-  console.log("req.body:", req.body);
-
-  const subject = new Subject({
+exports.addCategory = (req, res) => {
+  const category = new Category({
     title: req.body.title,
-    description: req.body.description,
     isPublic: req.body.isPublic
   });
 
-  subject.save((err, subject) => {
+  category.save((err, category) => {
     if (err) {
-      res.status(500).send({ message: err })
+      res.status(500).send({ message: err });
       return;
     }
 
@@ -42,9 +39,9 @@ exports.addSubject = (req, res) => {
     //         return;
     //       }
 
-    //       subject.authorName = author;
+    //       category.authorName = author;
 
-    //       subject.save((err) => {
+    //       category.save((err) => {
     //         if (err) {
     //           res.status(500).send({ message: err });
     //           return;
@@ -52,64 +49,63 @@ exports.addSubject = (req, res) => {
     //       });
 
     //       res.status(200).send({
-    //         name: subject.name,
-    //         description: subject.description,
+    //         name: category.name,
+    //         description: category.description,
     //         author: author.username,
     //       });
     //     }
     //   );
     // }
 
-    if (req.body.notebookId) {
-      console.log("noteookid found:", req.body.notebookId);
-      Notebook.findOne(
-        { _id: { $in: req.body.notebookId },
+    if (req.body.subjectId) {
+      Subject.findOne(
+        { _id: { $in: req.body.subjectId },
       }, 
-      (err, notebook) => {
+      (err, subject) => {
         if(err) {
           res.status(500).send({ message: err });
           return;
         }
 
-        notebook.subjects.push(subject);
-        notebook.save();
+        subject.categories.push(category);
+        subject.save();
         // res.status(200).send({
-        //   subject
+        //   category
         //  });
        });
     }
   })
     res.status(200).send({
-        subject
-  })
+        category
+  });
 };
 
-exports.deleteSubject = (req, res) => {
+exports.deleteCategory = (req, res) => {
 
-  Subject.deleteOne({ _id: req.params.id }, (err, subject) => {
+  Category.deleteOne({ _id: req.params.id }, (err, category) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
-    //Delete all votes related to that subject
-    res.status(200).send({ message: "subject deleted!" });
+    //Delete all votes related to that category
+    res.status(200).send({ message: "category deleted!" });
   });
 };
 
-exports.updateSubject = (req, res) => {
+exports.updateCategory = (req, res) => {
   const update = {
     title: req.body.title,
     description: req.body.description,
     isPublic: req.body.isPublic
   };
 
-  Subject.findByIdAndUpdate({ _id: req.params.id }, update, (err, subject) => {
+  Category.findByIdAndUpdate({ _id: req.params.id }, update, (err, category) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     } else {
-      console.log("subject: ", subject);
+      console.log("category: ", category);
     }
-    res.status(200).send({ message: "Subject updated successfully" });
+    res.status(200).send({ message: "Category updated successfully" });
   });
 };

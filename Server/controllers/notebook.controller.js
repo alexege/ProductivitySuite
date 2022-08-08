@@ -10,7 +10,20 @@ exports.allNotebooks = (req, res) => {
     }
     res.status(200).send({ notebooks });
   })
-//   .populate("comments")
+  .populate({ path: "subjects", 
+    populate: {
+      path: "categories",
+      model: 'Category',
+      populate: {
+        path: 'notes',
+        model: 'Note',
+        // populate: {
+        //   path: 'comments',
+        //   model: 'Comment'
+        // }
+      }
+    }
+  })
   .sort([["createdAt", "descending"]]);
 };
 
