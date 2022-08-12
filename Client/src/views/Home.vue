@@ -49,7 +49,7 @@
 
         <div v-for="category in subject.categories" :key="category._id">
           {{ category.title }}
-          <pre>{{ category }}</pre>
+          <pre>{{ category.title }}</pre>
 
 
             <!-- Note Start -->
@@ -59,6 +59,26 @@
 
               <div v-for="note in category.notes" :key="note._id">
                 {{ note.title }}
+
+
+                  <!-- Comment Start -->
+                  <div class="comment">
+                    <input type="text" v-model="newComment.title">
+                    <button @click="addComment(note._id)">Add Comment</button>
+
+                    <div v-for="comment in note.comments" :key="comment._id">
+                      {{ comment.title }}
+
+                      <button @click="editComment(comment)">edit</button>
+
+                      <input type="text" v-model="comment.title">
+                      <input type="checkbox" v-model="comment.isPublic">
+                      <button @click="updateComment(comment)">update</button>
+                      <button @click="deleteComment(comment._id)">delete</button>
+                    </div>
+                  </div>
+                  <!-- Comment End       -->
+
 
                 <button @click="editNote(note)">edit</button>
 
@@ -139,6 +159,12 @@ export default {
       newNote: {
         title: null,
         body: null,
+      },
+
+      allComments: null,
+
+      newComment: {
+        title: null,
       }
     };
   },
@@ -154,6 +180,7 @@ export default {
         this.getAllNotebooks();
         this.getAllSubjects();
         this.getAllCategories();
+        this.getAllComments();
       })
       .catch((err) => {
         console.log("Error adding notebook: ", err);
@@ -349,14 +376,67 @@ export default {
       })
     },
 
-    // getAllNotes() {
-    //   return this.$store.dispatch(
-    //     "note/allNotes"
-    //   )
-    //   .then((res) => {
-    //     this.allNotes = res.data.categories;
-    //   })
-    // }
+    getAllNotes() {
+      return this.$store.dispatch(
+        "note/allNotes"
+      )
+      .then((res) => {
+        this.allNotes = res.data.categories;
+      })
+    },
+
+
+    addComment(noteId) {
+      console.log("noteId:", noteId);
+      return this.$store.dispatch(
+        "comment/addComment", { comment: this.newComment, noteId }
+      )
+      .then(() => {
+        this.newComment.title = '';
+      })
+      .catch((err) => {
+        console.log("Error adding comment: ", err);
+      })
+    },
+
+    editComment(comment) {
+      this.commentToEdit.title = comment.title;
+      this.commentToEdit.description = comment.description;
+    },
+
+    updateComment(comment) {
+      // console.log("updating wtih id: ", id);
+      let updateComment = {
+        title: comment.title,
+        body: comment.body,
+        isPublic: comment.isPublic
+      }
+
+      //Toggle editMode if using a modal
+      return this.$store.dispatch('comment/updateComment' , { id:comment._id, comment: updateComment })
+      .then(() => {
+        // this.getAllComments();
+      });
+    },
+
+    deleteComment(id) {
+      return this.$store.dispatch('comment/deleteComment', id)
+      .then(() => {
+        // this.getAllComments();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+    },
+
+    getAllComments() {
+      return this.$store.dispatch(
+        "comment/allComments"
+      )
+      .then((res) => {
+        this.allComments = res.data.comments;
+      })
+    }
 
 
 
@@ -366,7 +446,8 @@ export default {
     this.getAllNotebooks();
     this.getAllSubjects();
     this.getAllCategories();
-    // this.getAllNotes();
+    this.getAllNotes();
+    this.getAllComments();
 
     UserService.getPublicContent().then(
       response => {
@@ -406,4 +487,10 @@ export default {
     padding: 5px;
     width: 100%;
   }
+
+.comment {
+  border: 2px solid cyan;
+  padding: 5px;
+  width: 100%;
+}
 </style>

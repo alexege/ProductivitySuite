@@ -6,6 +6,7 @@ import { notebook } from './notebook.module';
 import { subject } from './subject.module';
 import { category } from './category.module';
 import { note } from './note.module';
+import { comment } from './comment.module';
 
 Vue.use(Vuex);
 
@@ -15,6 +16,7 @@ export default new Vuex.Store({
     notebook,
     subject,
     category,
-    note
+    note,
+    comment
   }
 });

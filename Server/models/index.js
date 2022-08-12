@@ -11,6 +11,7 @@ db.notebook = require('./notebook.model');
 db.subject = require('./subject.model');
 db.category = require('./category.model');
 db.note = require('./note.model');
+db.comment = require('./comment.model');
 db.refreshToken = require('./refreshToken.model');
 
 db.ROLES = ["user", "admin", "moderator"];
