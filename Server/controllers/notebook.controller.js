@@ -17,10 +17,10 @@ exports.allNotebooks = (req, res) => {
       populate: {
         path: 'notes',
         model: 'Note',
-        // populate: {
-        //   path: 'comments',
-        //   model: 'Comment'
-        // }
+        populate: {
+          path: 'comments',
+          model: 'Comment'
+        }
       }
     }
   })
