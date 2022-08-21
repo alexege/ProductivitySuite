@@ -21,12 +21,10 @@
                 <div v-for="category in subject.categories" :key="category._id">
                 <div class="title">{{ category.title }}</div>
 
-                  <!-- Note Start -->
-                  <div class="note">
+                  <!-- <div class="note">
                     <div v-for="note in category.notes" :key="note._id">
                       <div class="title">{{ note.title }}</div>
 
-                      <!-- Comment Start -->
                       <div class="comment">
                         <div v-for="comment in note.comments" :key="comment._id">
                         <div class="title">{{ comment.title }}</div>
@@ -38,20 +36,16 @@
                           </div>
 
                           <div class="comment-actions">
-                            <button @click="editComment(comment)">edit</button>
-                            <button @click="deleteComment(comment._id)">delete</button>
+                            <button @click="editComment(comment)">*</button>
+                            <button @click="deleteComment(comment._id)">x</button>
                           </div>
                         </div>
 
                         <div class="add-comment">
-                          <input type="text" v-model="newComment.title" />
-                          <button @click="addComment(note._id)">
-                            Add Comment
-                          </button>
+                          <input type="text" v-model="newComment.title" placeholder="Add Comment"/>
+                          <button @click="addComment(note._id)">+</button>
                         </div>
                       </div>
-                      <!-- Comment End       -->
-
 
                       <div class="update-note">
                         <button @click="updateNote(note)">update</button>
@@ -60,17 +54,16 @@
                       </div>
 
                       <div class="note-actions">
-                        <button @click="editNote(note)">edit</button>
-                        <button @click="deleteNote(note._id)">delete</button>
+                        <button @click="editNote(note)">*</button>
+                        <button @click="deleteNote(note._id)">x</button>
                       </div>
                     </div>
 
                     <div class="add-note">
-                      <input type="text" v-model="newNote.title" />
-                      <button @click="addNote(category._id)">Add Note</button>
+                      <input type="text" v-model="newNote.title" placeholder="Add Note"/>
+                      <button @click="addNote(category._id)">+</button>
                     </div>
-                  </div>
-                  <!-- Note End       -->
+                  </div> -->
 
 
                   <div class="update-category">
@@ -80,14 +73,14 @@
                   </div>
 
                   <div class="category-actions">
-                    <button @click="editCategory(category)">edit</button>
-                    <button @click="deleteCategory(category._id)">delete</button>
+                    <button @click="editCategory(category)">*</button>
+                    <button @click="deleteCategory(category._id)">x</button>
                   </div>
                 </div>
 
                 <div class="add-category">
-                  <input type="text" v-model="newCategory.title" />
-                  <button @click="addCategory(subject._id)">Add Category</button>
+                  <input type="text" v-model="newCategory.title" placeholder="Add Category"/>
+                  <button @click="addCategory(subject._id)">+</button>
                 </div>
               </div>
               <!-- Category End       -->
@@ -99,14 +92,14 @@
               </div>
 
               <div class="subject-actions">
-                <button @click="editSubject(subject)">edit</button>
-                <button @click="deleteSubject(subject._id)">delete</button>
+                <button @click="editSubject(subject)">*</button>
+                <button @click="deleteSubject(subject._id)">x</button>
               </div>
             </div>
 
             <div class="add-subject">
-              <input type="text" v-model="newSubject.title" />
-              <button @click="addSubject(notebook._id)">Add Subject</button>
+              <input type="text" v-model="newSubject.title" placeholder="Add Subject"/>
+              <button @click="addSubject(notebook._id)">+</button>
             </div>
           </div>
           <!-- Subject End -->
@@ -119,8 +112,8 @@
           <button @click="updateNotebook(notebook)">update</button>
         </div>
         <div class="notebook-actions">
-          <button @click="editNotebook(notebook)">edit</button>
-          <button @click="deleteNotebook(notebook._id)">delete</button>
+          <button @click="editNotebook(notebook)">*</button>
+          <button @click="deleteNotebook(notebook._id)">x</button>
         </div>
 
         </div>
@@ -129,7 +122,94 @@
 
     </div>
     <div class="main">
-      This is the main body
+      <div v-for="notebook in allNotebooks" :key="notebook._id">
+        <div class="notebook-title">
+          <pre>{{ notebook.title }}</pre>
+        </div>
+        <div v-for="subject in notebook.subjects" :key="subject._id">
+        <div class="subject-title">
+          <pre>{{ subject.title }}</pre>
+        </div>
+          <div v-for="category in subject.categories" :key="category._id">
+          <div class="category-title">
+            <pre>{{ category.title }}</pre>
+          </div>
+            <div v-for="note in category.notes" :key="note._id">
+            
+            <div class="note-body" v-if="show != note._id">
+            
+              <div class="note-title">
+                <pre>{{ note.title }}</pre>
+              </div>
+
+              <div class="note-actions-container" >
+                <div class="note-actions">
+                  <button @click="show = note._id">edit</button>
+                  <!-- <button @click="editNote(note)">update</button> -->
+                  <button @click="deleteNote(note._id)">delete</button>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="note-body" v-show="show === note._id">
+              <div class="note-title">
+                <textarea name="" id="" cols="60" v-model="note.title"></textarea>
+              </div>
+
+                <div class="note-actions-container">
+                  <div class="note-actions">
+                    <input type="checkbox" v-model="note.isPublic" />
+                    <button @click="updateNote(note)">update</button>
+                    <button @click="cancelUpdate()">cancel</button>
+  
+                  </div>
+                </div>
+
+              <!-- <div class="update-note" v-show="show === note._id" style="outline: 1px solid orange; width: 100%;">
+              <textarea name="noteTitle" id="noteTitle" cols="30" rows="10" v-model="note.title"></textarea>
+              </div> -->
+            </div>
+
+            <div>
+
+            </div>
+
+
+            <!-- <div class="update-note" v-show="show === note._id">
+              <div>
+              <textarea name="noteTitle" id="noteTitle" cols="30" rows="10" v-model="note.title"></textarea>
+              <input type="checkbox" v-model="note.isPublic" />
+              <button @click="updateNote(note)">update</button>
+            </div> -->
+
+          <!-- </div> -->
+
+        </div>
+
+            <div class="add-note">
+              <textarea name="addNote" id="addNote" cols="30" rows="10" v-model="newNote.title">Add Note</textarea>
+              <!-- <input type="text" v-model="newNote.title" placeholder="Add Note Title"> -->
+              <button @click="addNote(category._id)">Add</button>
+            </div>
+
+            <!-- <div class="update-note">
+                        <button @click="updateNote(note)">update</button>
+                        <input type="text" v-model="note.title" />
+                        <input type="checkbox" v-model="note.isPublic" />
+                      </div>
+
+                      <div class="note-actions">
+                        <button @click="editNote(note)">*</button>
+                        <button @click="deleteNote(note._id)">x</button>
+            </div> -->
+
+
+
+
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -172,6 +252,8 @@ export default {
       newComment: {
         title: null,
       },
+
+      show: null
     };
   },
 
@@ -358,7 +440,12 @@ export default {
       this.noteToEdit.description = note.description;
     },
 
+    cancelUpdate() {
+      this.show = null;
+    },
+
     updateNote(note) {
+      this.show = null;
       // console.log("updating wtih id: ", id);
       let updateNote = {
         title: note.title,
@@ -474,27 +561,37 @@ export default {
 };
 </script>
 <style scoped>
+
+.visible {
+  display: block;
+}
+
 .container {
   height: 100vh;
   display: flex;
 }
 
 .sideNav {
-  width: 400px;
+  width: 200px;
   height: 100%;
-  outline: 2px solid red;
+  /* outline: 2px solid red; */
 }
 
 .main {
   outline: 1px solid lime;
   display: flex;
+  flex-direction: column;
   flex: 1;
-  justify-content: center;
+  padding: 1rem;
 }
 
 .notebook {
- outline: 2px solid black;
+ /* outline: 2px solid black; */
   flex: 1;
+}
+
+.notebook-title {
+  text-align: center;
 }
 
 .add-notebook, .add-category, .add-subject, .add-comment, .add-note, .add-comment{
@@ -503,7 +600,7 @@ export default {
   font-size: .65em;
   font-weight: bold;
   width: 100%;
-  outline: 2px solid yellow;
+  /* outline: 2px solid yellow; */
 }
 
 .add-notebook input, .add-category input, .add-subject input, .add-comment input, .add-note input, .add-comment input{
@@ -518,7 +615,7 @@ export default {
 }
 
 .update-notebook, .update-subject, .update-category, .update-note, .update-comment {
-  display: none;
+  /* display: none; */
 }
 
 .notebook-actions {
@@ -526,22 +623,55 @@ export default {
 }
 
 .subject {
- outline: 2px solid red;
+ /* outline: 2px solid red; */
   width: 100%;
+}
+
+.subject-title {
+  margin-left: 1em;
+  font-weight: bold;
 }
 
 .category {
- outline: 2px solid lime;
+ /* outline: 2px solid lime; */
   width: 100%;
+}
+
+.category-title {
+  margin-left: 2em;
 }
 
 .note {
- outline: 2px solid yellow;
+ /* outline: 2px solid yellow; */
   width: 100%;
 }
 
+.note-title {
+  max-width: 500px;
+}
+
+.note-actions {
+  display: flex;
+}
+
+.note-actions-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.note-body {
+  padding: 0.5em;
+  margin: 0.75em;
+  box-shadow: 2px 2px 5px;
+  display: flex; 
+  justify-content: space-between;
+}
+
+.update-note {
+}
+
 .comment {
- outline: 2px solid cyan;
+ /* outline: 2px solid cyan; */
   width: 100%;
 }
 

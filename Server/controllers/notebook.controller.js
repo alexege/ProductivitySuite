@@ -24,7 +24,7 @@ exports.allNotebooks = (req, res) => {
       }
     }
   })
-  .sort([["createdAt", "descending"]]);
+  .sort([["createdAt", "ascending"]]);
 };
 
 exports.addNotebook = (req, res) => {
