@@ -86,6 +86,27 @@ exports.deleteNotebook = (req, res) => {
   });
 };
 
+exports.toggleNotebookPrivacy = (req, res) => {
+  Notebook.findOne({ _id: req.params.id }, (err, notebook) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    notebook.isPublic = !notebook.isPublic;
+    notebook.save((err, notebook) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      res.status(200).send({
+        notebook
+      })
+    });
+  })
+}
+
 exports.updateNotebook = (req, res) => {
   const update = {
     title: req.body.title,

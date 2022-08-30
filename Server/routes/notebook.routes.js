@@ -14,5 +14,6 @@ app.get("/api/notebook/allNotebooks", controller.allNotebooks);
 app.post("/api/notebook/addNotebook", controller.addNotebook);
 app.post("/api/notebook/updateNotebook/:id", controller.updateNotebook);
 app.delete("/api/notebook/deleteNotebook/:id", controller.deleteNotebook);
+app.put("/api/notebook/toggleNotebookPrivacy/:id", controller.toggleNotebookPrivacy);
 
 };

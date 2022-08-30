@@ -20,7 +20,7 @@ import {
   faMinus,
   faLock,
   faUnlock,
-  faCheck
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 
 import setupInterceptors from './services/setupInterceptors';

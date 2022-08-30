@@ -44,6 +44,18 @@ export const notebook = {
             })
         },
 
+        toggleNotebookPrivacy({ commit }, notebook) {
+            return NotebookService.toggleNotebookPrivacy(notebook)
+            .then(notebook => {
+                commit('toggleNotebookPrivacySuccess', notebook);
+                return Promise.resolve(notebook);
+            },
+            error => {
+                commit('toggleNotebookPrivacyFailure', notebook);
+                return Promise.reject(error);
+            })
+        },
+
         allNotebooks({ commit }, notebook) {
             return NotebookService.getAllNotebooks()
             .then(notebooks => {
@@ -66,5 +78,8 @@ export const notebook = {
         getAllNotebookFailure() {},
         deleteNotebookSuccess() {},
         deleteNotebookFailure() {},
+        toggleNotebookPrivacySuccess() {},
+        toggleNotebookPrivacyFailure() {},
+        
     }
 }

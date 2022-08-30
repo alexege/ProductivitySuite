@@ -3,7 +3,6 @@
     <div class="sideNav">
       <div class="add-notebook">
         <input type="text" v-model="newNotebook.title" />
-        <!-- <input type="text" v-model="newNotebook.description"> -->
         <button @click="addNotebook">Add Notebook</button>
       </div>
 
@@ -13,7 +12,12 @@
         <div class="title" v-show="showNotebook != notebook._id">
           {{ notebook.title }}
           <div class="notebook-actions">
-          <!-- <button @click="editNotebook(notebook)"> -->
+          <button v-if="notebook.isPublic">
+            <font-awesome-icon icon="unlock" @click="toggleNotebookPrivacy(notebook._id)"/>
+          </button>
+          <button v-else>
+            <font-awesome-icon icon="lock" @click="toggleNotebookPrivacy(notebook._id)"/>
+          </button>
           <button @click="showNotebook = notebook._id">
             <font-awesome-icon icon="pen" />
           </button>
@@ -77,6 +81,12 @@
                     <li style="list-style-type: square">{{ category.title }}</li>
                   </ul>
                   <div class="category-actions">
+                    <button v-if="category.isPublic">
+                      <font-awesome-icon icon="unlock" @click="toggleCategoryPrivacy(category._id)"/>
+                    </button>
+                    <button v-else>
+                      <font-awesome-icon icon="lock" @click="toggleCategoryPrivacy(category._id)"/>
+                    </button>
                     <button @click="showCategory = category._id">
                       <font-awesome-icon icon="pen" />
                     </button>
@@ -127,7 +137,7 @@
 
                         <div class="add-comment">
                           <input type="text" v-model="newComment.title" placeholder="Add Comment"/>
-                          <button @click="addComment(note._id)">+</button>
+                          <button @click="addComment(note._id)"><font-awesome-icon icon="check" /></button>
                         </div>
                       </div>
 
@@ -151,7 +161,7 @@
 
                     <div class="add-note">
                       <input type="text" v-model="newNote.title" placeholder="Add Note"/>
-                      <button @click="addNote(category._id)">+</button>
+                      <button @click="addNote(category._id)"><font-awesome-icon icon="check" /></button>
                     </div>
                   </div> -->
 
@@ -175,7 +185,7 @@
 
                 <div class="add-category">
                   <input type="text" v-model="newCategory.title" placeholder="Add Category"/>
-                  <button @click="addCategory(subject._id)">+</button>
+                  <button @click="addCategory(subject._id)"><font-awesome-icon icon="check" /></button>
                 </div>
               </div>
               <!-- Category End       -->
@@ -203,7 +213,7 @@
 
             <div class="add-subject">
               <input type="text" v-model="newSubject.title" placeholder="Add Subject"/>
-              <button @click="addSubject(notebook._id)">+</button>
+              <button @click="addSubject(notebook._id)"><font-awesome-icon icon="check" /></button>
             </div>
           </div>
           <!-- Subject End -->
@@ -434,6 +444,17 @@ export default {
         });
     },
 
+    toggleNotebookPrivacy(id) {
+      return this.$store
+        .dispatch("notebook/toggleNotebookPrivacy", id)
+        .then(() => {
+          this.getAll();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    },
+
     getAllNotebooks() {
       return this.$store.dispatch("notebook/allNotebooks").then((res) => {
         this.allNotebooks = res.data.notebooks;
@@ -549,6 +570,10 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+
+    toggleCategoryPrivacy(id) {
+      console.log("id:", id);
     },
 
     getAllCategories() {
@@ -818,6 +843,10 @@ export default {
   box-shadow: 2px 2px 5px;
   display: flex; 
   justify-content: space-between;
+}
+
+#addNote {
+  flex: 1;
 }
 
 .update-note {

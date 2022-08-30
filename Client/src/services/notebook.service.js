@@ -47,6 +47,17 @@ class NotebookService {
       });
   }
 
+  toggleNotebookPrivacy(id) {
+    return axios
+      .put(API_URL + "toggleNotebookPrivacy/" + id)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        return err;
+      });
+  }
+
   deleteNotebook(id) {
     return axios
       .delete(API_URL + "deleteNotebook/" + id)
