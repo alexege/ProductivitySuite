@@ -14,5 +14,6 @@ app.get("/api/subject/allSubjects", controller.allSubjects);
 app.post("/api/subject/addSubject", controller.addSubject);
 app.post("/api/subject/updateSubject/:id", controller.updateSubject);
 app.delete("/api/subject/deleteSubject/:id", controller.deleteSubject);
+app.put("/api/subject/toggleSubjectPrivacy/:id", controller.toggleSubjectPrivacy);
 
 };

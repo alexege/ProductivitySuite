@@ -96,6 +96,27 @@ exports.deleteSubject = (req, res) => {
   });
 };
 
+exports.toggleSubjectPrivacy = (req, res) => {
+  Subject.findOne({ _id: req.params.id }, (err, subject) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    subject.isPublic = !subject.isPublic;
+    subject.save((err, subject) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      res.status(200).send({
+        subject
+      })
+    });
+  })
+}
+
 exports.updateSubject = (req, res) => {
   const update = {
     title: req.body.title,

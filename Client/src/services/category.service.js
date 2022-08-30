@@ -48,6 +48,17 @@ class CategoryService {
       });
   }
 
+  toggleCategoryPrivacy(id) {
+    return axios
+      .put(API_URL + "toggleCategoryPrivacy/" + id)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        return err;
+      });
+  }
+
   deleteCategory(id) {
     return axios
       .delete(API_URL + "deleteCategory/" + id)

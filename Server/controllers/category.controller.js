@@ -92,6 +92,27 @@ exports.deleteCategory = (req, res) => {
   });
 };
 
+exports.toggleCategoryPrivacy = (req, res) => {
+  Category.findOne({ _id: req.params.id }, (err, category) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    category.isPublic = !category.isPublic;
+    category.save((err, category) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      res.status(200).send({
+        category
+      })
+    });
+  })
+}
+
 exports.updateCategory = (req, res) => {
   const update = {
     title: req.body.title,

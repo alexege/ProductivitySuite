@@ -44,6 +44,18 @@ export const subject = {
             })
         },
 
+        toggleSubjectPrivacy({ commit }, subject) {
+            return SubjectService.toggleSubjectPrivacy(subject)
+            .then(subject => {
+                commit('toggleSubjectPrivacySuccess', subject);
+                return Promise.resolve(subject);
+            },
+            error => {
+                commit('toggleSubjectPrivacyFailure', subject);
+                return Promise.reject(error);
+            })
+        },
+
         allSubjects({ commit }, subject) {
             return SubjectService.getAllSubjects()
             .then(subjects => {
@@ -66,5 +78,7 @@ export const subject = {
         getAllSubjectFailure() {},
         deleteSubjectSuccess() {},
         deleteSubjectFailure() {},
+        toggleSubjectPrivacySuccess() {},
+        toggleSubjectPrivacyFailure() {},
     }
 }

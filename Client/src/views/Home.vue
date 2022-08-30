@@ -512,7 +512,14 @@ export default {
     },
 
     toggleSubjectPrivacy(id) {
-      console.log("toggling privacy of subject: ", id);
+      return this.$store
+        .dispatch("subject/toggleSubjectPrivacy", id)
+        .then(() => {
+          this.getAll();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     },
 
     getAllSubjects() {
@@ -573,7 +580,14 @@ export default {
     },
 
     toggleCategoryPrivacy(id) {
-      console.log("id:", id);
+      return this.$store
+        .dispatch("category/toggleCategoryPrivacy", id)
+        .then(() => {
+          this.getAll();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     },
 
     getAllCategories() {

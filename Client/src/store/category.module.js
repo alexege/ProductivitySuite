@@ -44,6 +44,18 @@ export const category = {
             })
         },
 
+        toggleCategoryPrivacy({ commit }, category) {
+            return CategoryService.toggleCategoryPrivacy(category)
+            .then(category => {
+                commit('toggleCategoryPrivacySuccess', category);
+                return Promise.resolve(category);
+            },
+            error => {
+                commit('toggleCategoryPrivacyFailure', category);
+                return Promise.reject(error);
+            })
+        },
+
         allCategories({ commit }, category) {
             return CategoryService.getAllCategories()
             .then(categories => {
@@ -66,5 +78,7 @@ export const category = {
         getAllCategoryFailure() {},
         deleteCategorySuccess() {},
         deleteCategoryFailure() {},
+        toggleCategoryPrivacySuccess() {},
+        toggleCategoryPrivacyFailure() {},
     }
 }

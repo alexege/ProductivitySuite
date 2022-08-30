@@ -14,5 +14,6 @@ app.get("/api/category/allCategories", controller.allCategories);
 app.post("/api/category/addCategory", controller.addCategory);
 app.post("/api/category/updateCategory/:id", controller.updateCategory);
 app.delete("/api/category/deleteCategory/:id", controller.deleteCategory);
+app.put("/api/category/toggleCategoryPrivacy/:id", controller.toggleCategoryPrivacy);
 
 };

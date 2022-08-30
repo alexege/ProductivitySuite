@@ -33,6 +33,17 @@ class SubjectService {
       });
   }
 
+  toggleSubjectPrivacy(id) {
+    return axios
+      .put(API_URL + "toggleSubjectPrivacy/" + id)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        return err;
+      });
+  }
+
   updateSubject(data) {
     return axios
       .post(API_URL + "updateSubject/" + data.id, {
