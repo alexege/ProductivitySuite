@@ -2,7 +2,7 @@
   <div class="container" style="border: 2px solid black;">
     <div class="sideNav">
       <div class="add-notebook">
-        <input type="text" v-model="newNotebook.title" />
+        <input type="text" v-model="newNotebook.title" @keyup.enter="addNotebook" />
         <button @click="addNotebook">Add Notebook</button>
       </div>
 
@@ -184,7 +184,7 @@
                 </div> -->
 
                 <div class="add-category">
-                  <input type="text" v-model="newCategory.title" placeholder="Add Category"/>
+                  <input type="text" v-model="newCategory.title" placeholder="Add Category" @keyup.enter="addCategory(subject._id)"/>
                   <button @click="addCategory(subject._id)"><font-awesome-icon icon="check" /></button>
                 </div>
               </div>
@@ -212,7 +212,7 @@
             </div>
 
             <div class="add-subject">
-              <input type="text" v-model="newSubject.title" placeholder="Add Subject"/>
+              <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject(notebook._id)"/>
               <button @click="addSubject(notebook._id)"><font-awesome-icon icon="check" /></button>
             </div>
           </div>
@@ -235,7 +235,7 @@
 
     </div>
     <div class="main">
-      <div v-for="notebook in allNotebooks" :key="notebook._id">
+      <div v-for="notebook in allNotebooks" :key="notebook._id" class="notebook-body">
         <div class="notebook-title">
           <pre>{{ notebook.title }}</pre>
         </div>
@@ -279,11 +279,19 @@
 
                 <div class="note-actions-container">
                   <div class="note-actions">
-                    <input type="checkbox" v-model="note.isPublic" />
+                    <!-- <input type="checkbox" v-model="note.isPublic" /> -->
+                    <button v-if="notebook.isPublic">
+                      <font-awesome-icon icon="unlock" @click="toggleNotebookPrivacy(notebook._id)"/>
+                    </button>
+                    <button v-else>
+                      <font-awesome-icon icon="lock" @click="toggleNotebookPrivacy(notebook._id)"/>
+                    </button>
                     <button @click="updateNote(note)">
                       <font-awesome-icon icon="upload" />
                     </button>
-                    <button @click="cancelUpdate()">cancel</button>
+                    <button @click="cancelUpdate()">
+                      <font-awesome-icon icon="minus" />
+                    </button>
   
                   </div>
                 </div>
@@ -313,7 +321,7 @@
         </div>
 
             <div class="add-note">
-              <textarea name="addNote" id="addNote" cols="30" rows="10" v-model="newNote.title" :placeholder="`Add Note to${category.title}`">Add note</textarea>
+              <textarea name="addNote" id="addNote" cols="30" rows="10" v-model="newNote.title" :placeholder="`Add Note to${category.title}`" @keyup.enter="addNote(category._id)">Add note</textarea>
               <!-- <input type="text" v-model="newNote.title" placeholder="Add Note Title"> -->
               <button @click="addNote(category._id)">Add</button>
             </div>
@@ -740,7 +748,6 @@ export default {
 }
 
 .container {
-  height: 100vh;
   display: flex;
 }
 
@@ -761,6 +768,11 @@ export default {
 .notebook {
  /* outline: 2px solid yellow; */
   flex: 1;
+}
+
+.notebook-body {
+  border: 2px solid black;
+  margin: .25em;
 }
 
 .notebook-title {
