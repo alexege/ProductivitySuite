@@ -1,17 +1,16 @@
 <template>
-  <div class="container" style="border: 2px solid black;">
+  <div class="container">
     <div class="sideNav">
-      <div class="add-notebook">
-        <input type="text" v-model="newNotebook.title" @keyup.enter="addNotebook" />
-        <button @click="addNotebook">Add Notebook</button>
+      
+      <div v-if="!allNotebooks.length > 0">
+        Add a notebook to get started
       </div>
-
       <div class="notebook">
-        <div v-for="notebook in allNotebooks" :key="notebook._id">
+        <div v-for="(notebook, note_idx) in allNotebooks" :key="notebook._id">
 
-        <div class="title" v-show="showNotebook != notebook._id">
+        <div class="title" @mouseover="showNotebookIndex = note_idx" @mouseout="showNotebookIndex = null" v-show="showNotebook != notebook._id">
           {{ notebook.title }}
-          <div class="notebook-actions">
+          <div class="notebook-actions" v-show="showNotebookIndex === note_idx">
           <button v-if="notebook.isPublic">
             <font-awesome-icon icon="unlock" @click="toggleNotebookPrivacy(notebook._id)"/>
           </button>
@@ -30,7 +29,6 @@
 
         <div class="update-notebook" v-show="showNotebook == notebook._id">
           <input type="text" v-model="notebook.title" />
-          <input type="checkbox" v-model="notebook.isPublic" />
           <button @click="updateNotebook(notebook)">
             <font-awesome-icon icon="upload" />
           </button>
@@ -41,12 +39,12 @@
 
           <!-- Subject Start -->
           <div class="subject">
-            <div v-for="subject in notebook.subjects" :key="subject._id">
-              <div class="title" v-show="showSubject != subject._id">
+            <div v-for="(subject, subject_idx) in notebook.subjects" :key="subject._id">
+              <div class="title" @mouseover="showSubjectIndex = subject_idx" @mouseout="showSubjectIndex = null" v-show="showSubject != subject._id">
               <ul>
                 <li style="list-style-type:square">{{ subject.title }}</li>
               </ul>
-                <div class="subject-actions">
+                <div class="subject-actions" v-show="showSubjectIndex === subject_idx">
                   <button v-if="subject.isPublic">
                     <font-awesome-icon icon="unlock" @click="toggleSubjectPrivacy(subject._id)"/>
                   </button>
@@ -64,7 +62,6 @@
 
             <div class="update-subject" v-show="showSubject == subject._id">
                 <input type="text" v-model="subject.title" />
-                <input type="checkbox" v-model="subject.isPublic" />
                 <button @click="updateSubject(subject)">
                   <font-awesome-icon icon="upload" />
                 </button>
@@ -75,12 +72,12 @@
 
               <!-- Category Start -->
               <div class="category">
-                <div v-for="category in subject.categories" :key="category._id">
-                <div class="title" v-show="showCategory != category._id">
-                  <ul>
-                    <li style="list-style-type: square">{{ category.title }}</li>
-                  </ul>
-                  <div class="category-actions">
+                <div v-for="(category, category_idx) in subject.categories" :key="category._id">
+                  <div class="title" @mouseover="showCategoryIndex = category_idx" @mouseout="showCategoryIndex = null" v-show="showCategory != category._id">
+                    <ul>
+                      <li style="list-style-type: square">{{ category.title }}</li>
+                    </ul>
+                    <div class="category-actions" v-show="showCategoryIndex === category_idx">
                     <button v-if="category.isPublic">
                       <font-awesome-icon icon="unlock" @click="toggleCategoryPrivacy(category._id)"/>
                     </button>
@@ -98,7 +95,6 @@
 
               <div class="update-category" v-show="showCategory == category._id">
                     <input type="text" v-model="category.title" />
-                    <input type="checkbox" v-model="category.isPublic" />
                     <button @click="updateCategory(category)">
                       <font-awesome-icon icon="upload" />
                     </button>
@@ -109,80 +105,6 @@
                   
                 </div>
 
-                  <!-- <div class="note">
-                    <div v-for="note in category.notes" :key="note._id">
-                      <div class="title">{{ note.title }}</div>
-
-                      <div class="comment">
-                        <div v-for="comment in note.comments" :key="comment._id">
-                        <div class="title">{{ comment.title }}</div>
-
-                          <div class="update-comment">
-                            <button @click="updateComment(comment)">
-            <font-awesome-icon icon="upload" />
-
-                            </button>
-                            <input type="text" v-model="comment.title" />
-                            <input type="checkbox" v-model="comment.isPublic" />
-                          </div>
-
-                          <div class="comment-actions">
-                            <button @click="editComment(comment)">
-                      <font-awesome-icon icon="pen" />
-
-                            </button>
-                            <button @click="deleteComment(comment._id)">x</button>
-                          </div>
-                        </div>
-
-                        <div class="add-comment">
-                          <input type="text" v-model="newComment.title" placeholder="Add Comment"/>
-                          <button @click="addComment(note._id)"><font-awesome-icon icon="check" /></button>
-                        </div>
-                      </div>
-
-                      <div class="update-note">
-                        <button @click="updateNote(note)">
-            <font-awesome-icon icon="upload" />
-
-                        </button>
-                        <input type="text" v-model="note.title" />
-                        <input type="checkbox" v-model="note.isPublic" />
-                      </div>
-
-                      <div class="note-actions">
-                        <button @click="editNote(note)">
-                      <font-awesome-icon icon="pen" />
-
-                        </button>
-                        <button @click="deleteNote(note._id)">x</button>
-                      </div>
-                    </div>
-
-                    <div class="add-note">
-                      <input type="text" v-model="newNote.title" placeholder="Add Note"/>
-                      <button @click="addNote(category._id)"><font-awesome-icon icon="check" /></button>
-                    </div>
-                  </div> -->
-
-                  <!-- <div class="update-category">
-                    <button @click="updateCategory(category)">
-                      <font-awesome-icon icon="upload" />
-                    </button>
-                    <input type="text" v-model="category.title" />
-                    <input type="checkbox" v-model="category.isPublic" />
-                  </div>
-
-                  <div class="category-actions">
-                    <button @click="editCategory(category)">
-                      <font-awesome-icon icon="pen" />
-                    </button>
-                    <button @click="deleteCategory(category._id)">
-                      <font-awesome-icon icon="trash" />
-                    </button>
-                  </div>
-                </div> -->
-
                 <div class="add-category">
                   <input type="text" v-model="newCategory.title" placeholder="Add Category" @keyup.enter="addCategory(subject._id)"/>
                   <button @click="addCategory(subject._id)"><font-awesome-icon icon="check" /></button>
@@ -190,51 +112,29 @@
               </div>
               <!-- Category End       -->
 
-              <!-- <div class="update-subject">
-                <input type="text" v-model="subject.title" />
-                <input type="checkbox" v-model="subject.isPublic" />
-                <button @click="updateSubject(subject)">
-                  <font-awesome-icon icon="upload" />
-                </button>
-                <button>
-                  <font-awesome-icon icon="minus" />
-                </button>
-              </div> -->
-
-              <!-- <div class="subject-actions">
-                <button @click="editSubject(subject)">
-                      <font-awesome-icon icon="pen" />
-                </button>
-                <button @click="deleteSubject(subject._id)">
-                    <font-awesome-icon icon="trash" />
-                </button>
-              </div> -->
             </div>
 
             <div class="add-subject">
-              <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject(notebook._id)"/>
+              <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject(notebook._id)" />
               <button @click="addSubject(notebook._id)"><font-awesome-icon icon="check" /></button>
             </div>
           </div>
           <!-- Subject End -->
 
-
-        
-        <!-- <div class="notebook-actions" style="outline: 1px solid red;">
-          <button @click="editNotebook(notebook)">
-                      <font-awesome-icon icon="pen" />
-          </button>
-          <button @click="deleteNotebook(notebook._id)">
-              <font-awesome-icon icon="trash" />
-          </button>
-        </div> -->
-
         </div>
       </div>
       <!-- Notebook End -->
 
+      <div class="add-notebook">
+        <input type="text" v-model="newNotebook.title" placeholder="Add Notebook" @keyup.enter="addNotebook" />
+        <button @click="addNotebook"><font-awesome-icon icon="check" /></button>
+      </div>
+
     </div>
     <div class="main">
+      <div v-if="!allNotebooks.length > 0">
+        <p style="text-align: center;">No notebooks found.</p>
+      </div>
       <div v-for="notebook in allNotebooks" :key="notebook._id" class="notebook-body">
         <div class="notebook-title">
           <pre>{{ notebook.title }}</pre>
@@ -396,7 +296,11 @@ export default {
 
       showNotebook: null,
       showSubject: null,
-      showCategory: null
+      showCategory: null,
+
+      showNotebookIndex: null,
+      showSubjectIndex: null,
+      showCategoryIndex: null
     };
   },
 
@@ -749,6 +653,7 @@ export default {
 
 .container {
   display: flex;
+  min-height: calc(100vh - 56px);
 }
 
 .sideNav {
@@ -763,6 +668,8 @@ export default {
   flex-direction: column;
   flex: 1;
   padding: 1rem;
+  max-height: calc(100vh - 56px);
+  overflow: auto;
 }
 
 .notebook {
@@ -804,7 +711,7 @@ export default {
 }
 
 .update-notebook input[type="text"], .update-subject input[type="text"], .update-category input[type="text"], .update-note input[type="text"], .update-comment input[type="text"] {
-  /* width: 100%; */
+  width: 100%;
   display: block;
 }
 
@@ -892,5 +799,8 @@ export default {
 
   display: flex; justify-content: space-between;
 }
+
+.hidden { display: none; }
+.trigger:hover + .hidden { display: inline; }
 
 </style>
