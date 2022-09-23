@@ -1,29 +1,34 @@
 <template>
   <div class="container">
+
     <div class="sideNav">
+
+      <!-- <input type="text" id="myInput" @keyup="searchNotebooks()" placeholder="Search ..."> -->
       
-      <div v-if="!allNotebooks.length > 0">
+      <div v-if="allNotebooks && !allNotebooks.length > 0">
         Add a notebook to get started
       </div>
       <div class="notebook">
-        <div v-for="(notebook, note_idx) in allNotebooks" :key="notebook._id">
+        <div v-for="(notebook, note_idx) in allNotebooks" :key="notebook._id" class="notebook_container">
 
         <div class="title" @mouseover="showNotebookIndex = note_idx" @mouseout="showNotebookIndex = null" v-show="showNotebook != notebook._id">
+          
           {{ notebook.title }}
+
           <div class="notebook-actions" v-show="showNotebookIndex === note_idx">
-          <button v-if="notebook.isPublic">
-            <font-awesome-icon icon="unlock" @click="toggleNotebookPrivacy(notebook._id)"/>
-          </button>
-          <button v-else>
-            <font-awesome-icon icon="lock" @click="toggleNotebookPrivacy(notebook._id)"/>
-          </button>
-          <button @click="showNotebook = notebook._id">
-            <font-awesome-icon icon="pen" />
-          </button>
-          <button @click="deleteNotebook(notebook._id)">
-              <font-awesome-icon icon="trash" />
-          </button>
-        </div>
+            <button v-if="notebook.isPublic">
+              <font-awesome-icon icon="unlock" @click="toggleNotebookPrivacy(notebook._id)"/>
+            </button>
+            <button v-else>
+              <font-awesome-icon icon="lock" @click="toggleNotebookPrivacy(notebook._id)"/>
+            </button>
+            <button @click="showNotebook = notebook._id">
+              <font-awesome-icon icon="pen" />
+            </button>
+            <button @click="deleteNotebook(notebook._id)">
+                <font-awesome-icon icon="trash" />
+            </button>
+          </div>
 
         </div>
 
@@ -132,7 +137,16 @@
 
     </div>
     <div class="main">
-      <div v-if="!allNotebooks.length > 0">
+
+
+      <div>
+      <div v-for="notebook in allNotebooks" :key="notebook._id" style="flex-direction: column;">
+        <Notebook style="width: 600px;" :subjects=notebook.subjects :notebook="notebook"/>
+      </div>
+    </div>
+    
+
+      <div v-if="allNotebooks && !allNotebooks.length > 0">
         <p style="text-align: center;">No notebooks found.</p>
       </div>
       <div v-for="notebook in allNotebooks" :key="notebook._id" class="notebook-body">
@@ -255,395 +269,353 @@
 
 <script>
 import UserService from "../services/user.service";
+import Notebook from "../components/Notebook.vue";
 
 export default {
-  name: "Home",
-  data() {
-    return {
-      allNotebooks: null,
-
-      newNotebook: {
-        title: null,
-        description: null,
-      },
-
-      allSubjects: null,
-
-      newSubject: {
-        title: null,
-      },
-
-      allCategories: null,
-
-      newCategory: {
-        title: null,
-      },
-
-      allNotes: null,
-
-      newNote: {
-        title: null,
-        body: null,
-      },
-
-      allComments: null,
-
-      newComment: {
-        title: null,
-      },
-
-      show: null,
-
-      showNotebook: null,
-      showSubject: null,
-      showCategory: null,
-
-      showNotebookIndex: null,
-      showSubjectIndex: null,
-      showCategoryIndex: null
-    };
+  components: {
+    Notebook
   },
-
-  methods: {
-    addNotebook() {
-      return this.$store
-        .dispatch("notebook/addNotebook", this.newNotebook)
-        .then(() => {
-          (this.newNotebook.title = ""),
-            // this.newNotebook.description = '',
-            this.getAll();
-        })
-        .catch((err) => {
-          console.log("Error adding notebook: ", err);
+    name: "Home",
+    data() {
+        return {
+            allNotebooks: null,
+            newNotebook: {
+                title: null,
+                description: null,
+            },
+            allSubjects: null,
+            newSubject: {
+                title: null,
+            },
+            allCategories: null,
+            newCategory: {
+                title: null,
+            },
+            allNotes: null,
+            newNote: {
+                title: null,
+                body: null,
+            },
+            allComments: null,
+            newComment: {
+                title: null,
+            },
+            show: null,
+            showNotebook: null,
+            showSubject: null,
+            showCategory: null,
+            showNotebookIndex: null,
+            showSubjectIndex: null,
+            showCategoryIndex: null,
+            expandNotebook: null,
+            expandSubject: null,
+            expandCategory: null
+        };
+    },
+    methods: {
+        addNotebook() {
+            return this.$store
+                .dispatch("notebook/addNotebook", this.newNotebook)
+                .then(() => {
+                (this.newNotebook.title = ""),
+                    // this.newNotebook.description = '',
+                    this.getAll();
+            })
+                .catch((err) => {
+                console.log("Error adding notebook: ", err);
+            });
+        },
+        editNotebook(notebook) {
+            console.log("notebook:", notebook.title);
+            this.showNotebook = notebook._id;
+            this.notebookToEdit.title = notebook.title;
+            this.notebookToEdit.description = notebook.description;
+        },
+        updateNotebook(notebook) {
+            this.showNotebook = null;
+            // console.log("updating wtih id: ", id);
+            let updateNotebook = {
+                title: notebook.title,
+                description: notebook.description,
+                isPublic: notebook.isPublic,
+            };
+            //Toggle editMode if using a modal
+            return this.$store
+                .dispatch("notebook/updateNotebook", {
+                id: notebook._id,
+                notebook: updateNotebook,
+            })
+                .then(() => {
+                this.getAllNotebooks();
+            });
+        },
+        deleteNotebook(id) {
+            return this.$store
+                .dispatch("notebook/deleteNotebook", id)
+                .then(() => {
+                this.getAllNotebooks();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        toggleNotebookPrivacy(id) {
+            return this.$store
+                .dispatch("notebook/toggleNotebookPrivacy", id)
+                .then(() => {
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        getAllNotebooks() {
+            return this.$store.dispatch("notebook/allNotebooks").then((res) => {
+                this.allNotebooks = res.data.notebooks;
+            });
+        },
+        addSubject(notebookId) {
+            return this.$store
+                .dispatch("subject/addSubject", {
+                subject: this.newSubject,
+                notebookId,
+            })
+                .then(() => {
+                (this.newSubject.title = ""), this.getAll();
+            })
+                .catch((err) => {
+                console.log("Error adding subject: ", err);
+            });
+        },
+        editSubject(subject) {
+            this.showSubject = subject._id;
+            this.subjectToEdit.title = subject.title;
+            this.subjectToEdit.description = subject.description;
+        },
+        updateSubject(subject) {
+            this.showSubject = null;
+            let updateSubject = {
+                title: subject.title,
+                description: subject.description,
+                isPublic: subject.isPublic,
+            };
+            //Toggle editMode if using a modal
+            return this.$store
+                .dispatch("subject/updateSubject", {
+                id: subject._id,
+                subject: updateSubject,
+            })
+                .then(() => {
+                this.getAllSubjects();
+            });
+        },
+        deleteSubject(id) {
+            return this.$store
+                .dispatch("subject/deleteSubject", id)
+                .then(() => {
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        toggleSubjectPrivacy(id) {
+            return this.$store
+                .dispatch("subject/toggleSubjectPrivacy", id)
+                .then(() => {
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        getAllSubjects() {
+            return this.$store.dispatch("subject/allSubjects").then((res) => {
+                this.allSubjects = res.data.subjects;
+            });
+        },
+        addCategory(subjectId) {
+            return this.$store
+                .dispatch("category/addCategory", {
+                category: this.newCategory,
+                subjectId,
+            })
+                .then(() => {
+                this.newCategory.title = "";
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log("Error adding category: ", err);
+            });
+        },
+        editCategory(category) {
+            this.categoryToEdit.title = category.title;
+            this.categoryToEdit.description = category.description;
+        },
+        updateCategory(category) {
+            this.showCategory = null;
+            // console.log("updating wtih id: ", id);
+            let updateCategory = {
+                title: category.title,
+                description: category.description,
+                isPublic: category.isPublic,
+            };
+            //Toggle editMode if using a modal
+            return this.$store
+                .dispatch("category/updateCategory", {
+                id: category._id,
+                category: updateCategory,
+            })
+                .then(() => {
+                this.getAllCategories();
+            });
+        },
+        deleteCategory(id) {
+            return this.$store
+                .dispatch("category/deleteCategory", id)
+                .then(() => {
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        toggleCategoryPrivacy(id) {
+            return this.$store
+                .dispatch("category/toggleCategoryPrivacy", id)
+                .then(() => {
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        getAllCategories() {
+            return this.$store.dispatch("category/allCategories").then((res) => {
+                this.allCategories = res.data.categories;
+            });
+        },
+        addNote(categoryId) {
+            return this.$store
+                .dispatch("note/addNote", { note: this.newNote, categoryId })
+                .then(() => {
+                this.newNote.title = "";
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log("Error adding note: ", err);
+            });
+        },
+        editNote(note) {
+            this.noteToEdit.title = note.title;
+            this.noteToEdit.description = note.description;
+        },
+        cancelUpdate() {
+            this.show = null;
+        },
+        updateNote(note) {
+            this.show = null;
+            // console.log("updating wtih id: ", id);
+            let updateNote = {
+                title: note.title,
+                body: note.body,
+                isPublic: note.isPublic,
+            };
+            //Toggle editMode if using a modal
+            return this.$store
+                .dispatch("note/updateNote", { id: note._id, note: updateNote })
+                .then(() => {
+                // this.getAllNotes();
+            });
+        },
+        deleteNote(id) {
+            return this.$store
+                .dispatch("note/deleteNote", id)
+                .then(() => {
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        getAllNotes() {
+            return this.$store.dispatch("note/allNotes").then((res) => {
+                this.allNotes = res.data.categories;
+            });
+        },
+        addComment(noteId) {
+            console.log("noteId:", noteId);
+            return this.$store
+                .dispatch("comment/addComment", { comment: this.newComment, noteId })
+                .then(() => {
+                this.newComment.title = "";
+                this.getAllNotebooks();
+            })
+                .catch((err) => {
+                console.log("Error adding comment: ", err);
+            });
+        },
+        editComment(comment) {
+            this.commentToEdit.title = comment.title;
+            this.commentToEdit.description = comment.description;
+        },
+        updateComment(comment) {
+            // console.log("updating wtih id: ", id);
+            let updateComment = {
+                title: comment.title,
+                body: comment.body,
+                isPublic: comment.isPublic,
+            };
+            //Toggle editMode if using a modal
+            return this.$store
+                .dispatch("comment/updateComment", {
+                id: comment._id,
+                comment: updateComment,
+            })
+                .then(() => {
+                // this.getAllComments();
+            });
+        },
+        deleteComment(id) {
+            return this.$store
+                .dispatch("comment/deleteComment", id)
+                .then(() => {
+                this.getAll();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        getAllComments() {
+            return this.$store.dispatch("comment/allComments").then((res) => {
+                this.allComments = res.data.comments;
+            });
+        },
+        getAll() {
+            this.getAllNotebooks();
+            this.getAllSubjects();
+            this.getAllCategories();
+            this.getAllNotes();
+            this.getAllComments();
+        },
+        searchNotebooks() {
+            console.log("Searching for something");
+        }
+    },
+    mounted() {
+        this.getAll();
+        UserService.getPublicContent().then((response) => {
+            this.content = response.data;
+        }, (error) => {
+            this.content =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString();
         });
-    },
-
-    editNotebook(notebook) {
-      console.log("notebook:", notebook.title);
-      this.showNotebook = notebook._id;
-      this.notebookToEdit.title = notebook.title;
-      this.notebookToEdit.description = notebook.description;
-    },
-
-    updateNotebook(notebook) {
-      this.showNotebook = null;
-      // console.log("updating wtih id: ", id);
-      let updateNotebook = {
-        title: notebook.title,
-        description: notebook.description,
-        isPublic: notebook.isPublic,
-      };
-
-      //Toggle editMode if using a modal
-      return this.$store
-        .dispatch("notebook/updateNotebook", {
-          id: notebook._id,
-          notebook: updateNotebook,
-        })
-        .then(() => {
-          this.getAllNotebooks();
-        });
-    },
-
-    deleteNotebook(id) {
-      return this.$store
-        .dispatch("notebook/deleteNotebook", id)
-        .then(() => {
-          this.getAllNotebooks();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    toggleNotebookPrivacy(id) {
-      return this.$store
-        .dispatch("notebook/toggleNotebookPrivacy", id)
-        .then(() => {
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    },
-
-    getAllNotebooks() {
-      return this.$store.dispatch("notebook/allNotebooks").then((res) => {
-        this.allNotebooks = res.data.notebooks;
-      });
-    },
-
-    addSubject(notebookId) {
-      return this.$store
-        .dispatch("subject/addSubject", {
-          subject: this.newSubject,
-          notebookId,
-        })
-        .then(() => {
-          (this.newSubject.title = ""), this.getAll();
-        })
-        .catch((err) => {
-          console.log("Error adding subject: ", err);
-        });
-    },
-
-    editSubject(subject) {
-      this.showSubject = subject._id;
-      this.subjectToEdit.title = subject.title;
-      this.subjectToEdit.description = subject.description;
-    },
-
-    updateSubject(subject) {
-      // console.log("updating wtih id: ", id);
-      let updateSubject = {
-        title: subject.title,
-        description: subject.description,
-        isPublic: subject.isPublic,
-      };
-
-      //Toggle editMode if using a modal
-      return this.$store
-        .dispatch("subject/updateSubject", {
-          id: subject._id,
-          subject: updateSubject,
-        })
-        .then(() => {
-          this.getAllSubjects();
-        });
-    },
-
-    deleteSubject(id) {
-      return this.$store
-        .dispatch("subject/deleteSubject", id)
-        .then(() => {
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    toggleSubjectPrivacy(id) {
-      return this.$store
-        .dispatch("subject/toggleSubjectPrivacy", id)
-        .then(() => {
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    },
-
-    getAllSubjects() {
-      return this.$store.dispatch("subject/allSubjects").then((res) => {
-        this.allSubjects = res.data.subjects;
-      });
-    },
-
-    addCategory(subjectId) {
-      return this.$store
-        .dispatch("category/addCategory", {
-          category: this.newCategory,
-          subjectId,
-        })
-        .then(() => {
-          this.newCategory.title = "";
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log("Error adding category: ", err);
-        });
-    },
-
-    editCategory(category) {
-      this.categoryToEdit.title = category.title;
-      this.categoryToEdit.description = category.description;
-    },
-
-    updateCategory(category) {
-      this.showCategory = null;
-      // console.log("updating wtih id: ", id);
-      let updateCategory = {
-        title: category.title,
-        description: category.description,
-        isPublic: category.isPublic,
-      };
-
-      //Toggle editMode if using a modal
-      return this.$store
-        .dispatch("category/updateCategory", {
-          id: category._id,
-          category: updateCategory,
-        })
-        .then(() => {
-          this.getAllCategories();
-        });
-    },
-
-    deleteCategory(id) {
-      return this.$store
-        .dispatch("category/deleteCategory", id)
-        .then(() => {
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    toggleCategoryPrivacy(id) {
-      return this.$store
-        .dispatch("category/toggleCategoryPrivacy", id)
-        .then(() => {
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    },
-
-    getAllCategories() {
-      return this.$store.dispatch("category/allCategories").then((res) => {
-        this.allCategories = res.data.categories;
-      });
-    },
-
-    addNote(categoryId) {
-      return this.$store
-        .dispatch("note/addNote", { note: this.newNote, categoryId })
-        .then(() => {
-          this.newNote.title = "";
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log("Error adding note: ", err);
-        });
-    },
-
-    editNote(note) {
-      this.noteToEdit.title = note.title;
-      this.noteToEdit.description = note.description;
-    },
-
-    cancelUpdate() {
-      this.show = null;
-    },
-
-    updateNote(note) {
-      this.show = null;
-      // console.log("updating wtih id: ", id);
-      let updateNote = {
-        title: note.title,
-        body: note.body,
-        isPublic: note.isPublic,
-      };
-
-      //Toggle editMode if using a modal
-      return this.$store
-        .dispatch("note/updateNote", { id: note._id, note: updateNote })
-        .then(() => {
-          // this.getAllNotes();
-        });
-    },
-
-    deleteNote(id) {
-      return this.$store
-        .dispatch("note/deleteNote", id)
-        .then(() => {
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    getAllNotes() {
-      return this.$store.dispatch("note/allNotes").then((res) => {
-        this.allNotes = res.data.categories;
-      });
-    },
-
-    addComment(noteId) {
-      console.log("noteId:", noteId);
-      return this.$store
-        .dispatch("comment/addComment", { comment: this.newComment, noteId })
-        .then(() => {
-          this.newComment.title = "";
-          this.getAllNotebooks();
-        })
-        .catch((err) => {
-          console.log("Error adding comment: ", err);
-        });
-    },
-
-    editComment(comment) {
-      this.commentToEdit.title = comment.title;
-      this.commentToEdit.description = comment.description;
-    },
-
-    updateComment(comment) {
-      // console.log("updating wtih id: ", id);
-      let updateComment = {
-        title: comment.title,
-        body: comment.body,
-        isPublic: comment.isPublic,
-      };
-
-      //Toggle editMode if using a modal
-      return this.$store
-        .dispatch("comment/updateComment", {
-          id: comment._id,
-          comment: updateComment,
-        })
-        .then(() => {
-          // this.getAllComments();
-        });
-    },
-
-    deleteComment(id) {
-      return this.$store
-        .dispatch("comment/deleteComment", id)
-        .then(() => {
-          this.getAll();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    getAllComments() {
-      return this.$store.dispatch("comment/allComments").then((res) => {
-        this.allComments = res.data.comments;
-      });
-    },
-
-    getAll() {
-      this.getAllNotebooks();
-      this.getAllSubjects();
-      this.getAllCategories();
-      this.getAllNotes();
-      this.getAllComments();
-    },
-  },
-
-  mounted() {
-    this.getAll();
-
-    UserService.getPublicContent().then(
-      (response) => {
-        this.content = response.data;
-      },
-      (error) => {
-        this.content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
-  },
-};
+    }
+}
 </script>
 <style scoped>
 
@@ -660,6 +632,9 @@ export default {
   width: 300px;
   height: 100%;
   /* outline: 2px solid red; */
+  max-height: calc(100vh - 56px);
+  z-index: 2;
+  overflow: auto;
 }
 
 .main {
@@ -675,6 +650,17 @@ export default {
 .notebook {
  /* outline: 2px solid yellow; */
   flex: 1;
+  /* border-left: 2px solid black; */
+  padding-left: 1em;
+}
+
+.notebook_container {
+  box-shadow: -2px 2px 10px #888888;
+  margin: 0.5em 0;
+}
+
+.notebook .title {
+  padding: 0.5em;
 }
 
 .notebook-body {
@@ -717,19 +703,27 @@ export default {
 
 .notebook-actions {
   display: flex;
+  box-shadow: -2px 2px 10px #888888;
 }
 
 .subject-actions {
   display: flex;
+  box-shadow: -2px 2px 10px #888888;
+}
+
+.category-actions {
+  /* display: flex; */
+  height: 100%;
+  box-shadow: -2px 2px 10px #888888;
 }
 
 .subject {
  /* outline: 2px solid red; */
   width: 100%;
-}
-
-.subject .title {
-  margin-left: 1em;
+  /* border-left: 2px solid red; */
+  box-shadow: -2px 2px 10px #888888;
+  padding: 0.5em 1em;
+  padding-right: 0;
 }
 
 .subject-title {
@@ -739,11 +733,10 @@ export default {
 
 .category {
  /* outline: 2px solid lime; */
+  /* border-left: 2px solid black; */
+  box-shadow: -2px 2px 10px #888888;
   width: 100%;
-}
-
-.category .title {
-  margin-left:2em;
+  padding-left: 1em;
 }
 
 .category-title {
@@ -782,9 +775,6 @@ export default {
   flex: 1;
 }
 
-.update-note {
-}
-
 .comment {
  /* outline: 2px solid cyan; */
   width: 100%;
@@ -800,7 +790,8 @@ export default {
   display: flex; justify-content: space-between;
 }
 
-.hidden { display: none; }
-.trigger:hover + .hidden { display: inline; }
+.title:hover {
+  cursor: pointer;  
+}
 
 </style>

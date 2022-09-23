@@ -70,7 +70,8 @@ export const notebook = {
     },
 
     mutations: {
-        addNotebookSuccess() {},
+        addNotebookSuccess() {
+        },
         addNotebookFailure() {},
         updateNotebookSuccess() {},
         updateNotebookFailure() {},
