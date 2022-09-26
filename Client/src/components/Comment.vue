@@ -1,12 +1,11 @@
 <template>
-    <div>
-        {{ commment }}
+    <div style="outline: 1px solid red;">
+        <pre>{{ comment.title }}</pre>
     </div>
 </template>
 <script>
     export default {
         name: 'Comment',
-        components: {  },
         props: ['comment'],
         data () {
             return {

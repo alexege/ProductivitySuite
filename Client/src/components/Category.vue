@@ -1,9 +1,19 @@
 <template>
-    <div>
-        <pre>{{ category.title }}</pre>
-        <div v-for="note in notes" :key="note">
-            <Note :note="note"/>
+    <div style="outline: 1px solid lime;">
+        <h4 v-if="category && category.title">{{ category.title }}</h4>
+
+        <div v-for="note in notes" :key="note._id">
+            <Note :comments="note.comments" :note="note"/>
         </div>
+
+        <!-- Add Note -->
+        <div class="add-note-container">
+            <input type="text" v-model="newNote.title" placeholder="Add Note" @keyup.enter="addNote(category._id)" />
+            <button @click="addNote(category._id)">
+                <font-awesome-icon icon="check" />
+            </button>
+        </div>
+
     </div>
 </template>
 <script>
@@ -14,11 +24,33 @@
         props: ['notes', 'category'],
         data () {
             return {
-                
+                newNote: {
+                    tittle: null
+                }
             }
+        },
+
+        methods: {
+            addNote(categoryId) {
+                return this.$store
+                    .dispatch("note/addNote", { note: this.newNote, categoryId })
+                    .then(() => {
+                    this.newNote.title = "";
+                })
+                    .catch((err) => {
+                    console.log("Error adding note: ", err);
+                });
+            },
         }
+
     }
 </script>
 <style scoped>
-   
+   .add-note-container {
+    display: flex;
+   }
+
+   .add-note-container input {
+    width: 100%;
+   }
 </style>
