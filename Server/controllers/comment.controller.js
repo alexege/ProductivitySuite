@@ -6,7 +6,7 @@ const Note = require("../models/note.model");
 const Comment = db.comment;
 
 exports.allComments = (req, res) => {
-    console.log("Attempting to get all comments:", req.body);
+    // console.log("Attempting to get all comments:", req.body);
   Comment.find({}, (err, comment) => {
     if (err) {
       res.status(500).send({ message: err });

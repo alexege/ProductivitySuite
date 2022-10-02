@@ -1,11 +1,10 @@
 <template>
-  <div class="container">
+    <div class="container">
+        
+        <!-- <button @click="gettingAllNotes">Get All Notes</button> -->
+        
+        <div class="sideNav">
 
-    <button @click="gettingAllNotes">Get All Notes</button>
-
-    <div class="sideNav">
-
-      
       <div v-for="notebook in allNotebooks" :key="notebook._id">
         <SidenavNotebook :subjects=notebook.subjects :notebook="notebook"/>
       </div>
@@ -26,10 +25,12 @@
     <input type="text" id="myInput" @keyup="searchNotebooks()" placeholder="Search ...">
     <!-- Start of Dynamic Setup -->
     <div>
-      <div class="add-notebook">
+      <!-- <div class="add-notebook">
         <input type="text" v-model="newNotebook.title" placeholder="Add Notebook" @keyup.enter="addNotebook" />
         <button @click="addNotebook"><font-awesome-icon icon="check" /></button>
-      </div>
+      </div> -->
+
+      <AddNotebook />
 
       <div v-for="notebook in allNotebooks" :key="notebook._id" style="flex-direction: column;" id="notes_container">
         <Notebook :subjects=notebook.subjects :notebook="notebook" class="notebook"/>
@@ -37,23 +38,27 @@
     </div>
   
     </div>
+
   </div>
 </template>
 
 <script>
 import UserService from "../services/user.service";
+import AddNotebook from "../components/AddNotebook.vue";
 import Notebook from "../components/Notebook.vue";
 import SidenavNotebook from "../components/Sidenav/SidenavNotebook.vue";
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   components: {
     Notebook,
+    AddNotebook,
     SidenavNotebook
   },
     name: "Home",
     data() {
         return {
-            allNotebooks: null,
+            // allNotebooks: [],
             newNotebook: {
                 title: null,
                 description: null,
@@ -88,13 +93,25 @@ export default {
         };
     },
     methods: {
+
+        ...mapActions('notebook', ["fetchNotebooks"]),
+
+        getAllNotebooks() {
+            return this.$store.dispatch("notebook/allNotebooks")
+            .then((res) => {
+                this.allNotebooks = res.data.notebooks;
+            });
+        },
+        
         addNotebook() {
+            console.log("Sending notebook: ", this.newNotebook);
             return this.$store
+                // .dispatch("notebook/addNotebook", this.newNotebook)
                 .dispatch("notebook/addNotebook", this.newNotebook)
                 .then(() => {
-                (this.newNotebook.title = ""),
+                // (this.newNotebook.title = ""),
                     // this.newNotebook.description = '',
-                    this.getAll();
+                    // this.getAll();
             })
                 .catch((err) => {
                 console.log("Error adding notebook: ", err);
@@ -144,11 +161,7 @@ export default {
                 console.log(err);
             });
         },
-        getAllNotebooks() {
-            return this.$store.dispatch("notebook/allNotebooks").then((res) => {
-                this.allNotebooks = res.data.notebooks;
-            });
-        },
+        
         addSubject(notebookId) {
             return this.$store
                 .dispatch("subject/addSubject", {
@@ -367,7 +380,7 @@ export default {
             });
         },
         getAll() {
-            this.getAllNotebooks();
+            // this.getAllNotebooks();
             this.getAllSubjects();
             this.getAllCategories();
             this.getAllNotes();
@@ -402,10 +415,6 @@ export default {
                     items[i].style.display = "none";
                 }
             }
-        },
-
-        showAddNotebookDialog() {
-          
         }
     },
     mounted() {
@@ -420,6 +429,13 @@ export default {
                     error.message ||
                     error.toString();
         });
+    },
+    computed: {
+       ...mapGetters('notebook', ["allNotebooks"]),
+    },
+
+    created() {
+        this.fetchNotebooks();
     }
 }
 </script>

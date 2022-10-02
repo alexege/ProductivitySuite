@@ -7,6 +7,9 @@ class NotebookService {
     return axios
       .get(API_URL + "allNotebooks")
       .then((res) => {
+
+        console.log("response.data:", res.data.notebooks);
+
         return res;
       })
       .catch((err) => {
@@ -15,6 +18,7 @@ class NotebookService {
   }
 
   addNotebook(notebook) {
+    console.log("Adding a notebook [services]: ", notebook);
     const user = JSON.parse(localStorage.getItem("user"));
 
     return axios
@@ -25,7 +29,8 @@ class NotebookService {
         isPublic: true,
       })
       .then((res) => {
-        return res.data;
+        console.log("res.data", res);
+        return res;
       })
       .catch((err) => {
         return err;

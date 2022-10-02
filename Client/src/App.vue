@@ -4,6 +4,9 @@
       <a href class="navbar-brand" @click.prevent>Ege Productivity Suite</a>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
+          <router-link to="/notebooks" class="nav-link">Notebooks</router-link>
+        </li>
+        <li class="nav-item">
           <router-link to="/home" class="nav-link">
             <font-awesome-icon icon="home" />Home
           </router-link>
@@ -16,6 +19,9 @@
         </li>
         <li class="nav-item">
           <router-link v-if="currentUser" to="/user" class="nav-link">User</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link v-if="currentUser" to="/nb" class="nav-link">NB</router-link>
         </li>
       </div>
 

@@ -5,7 +5,7 @@ const User = require("../models/user.model");
 const Note = db.note;
 
 exports.allNotes = (req, res) => {
-    console.log("Attempting to get all notes:", req.body);
+    // console.log("Attempting to get all notes:", req.body);
   Note.find({}, (err, note) => {
     if (err) {
       res.status(500).send({ message: err });

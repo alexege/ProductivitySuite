@@ -79,9 +79,9 @@ exports.addSubject = (req, res) => {
        });
     }
   })
-    res.status(200).send({
+    res.status(200).send(
         subject
-  })
+  )
 };
 
 exports.deleteSubject = (req, res) => {
