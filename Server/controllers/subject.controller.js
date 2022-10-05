@@ -9,19 +9,17 @@ exports.allSubjects = (req, res) => {
       res.status(500).send({ message: err });
       return;
     }
-    res.status(200).send({ subjects });
+    res.status(200).send(subjects);
   })
   .populate("categories")
   .sort([["createdAt", "descending"]]);
 };
 
 exports.addSubject = (req, res) => {
-
-  console.log("req.body:", req.body);
+  console.log("[subject.controller] ", req.body);
 
   const subject = new Subject({
     title: req.body.title,
-    description: req.body.description,
     isPublic: req.body.isPublic
   });
 
@@ -61,7 +59,6 @@ exports.addSubject = (req, res) => {
     // }
 
     if (req.body.notebookId) {
-      console.log("noteookid found:", req.body.notebookId);
       Notebook.findOne(
         { _id: { $in: req.body.notebookId },
       }, 
@@ -70,18 +67,17 @@ exports.addSubject = (req, res) => {
           res.status(500).send({ message: err });
           return;
         }
-
+        
         notebook.subjects.push(subject);
         notebook.save();
+        console.log("notebook:", notebook);
         // res.status(200).send({
         //   subject
         //  });
        });
     }
   })
-    res.status(200).send(
-        subject
-  )
+    res.status(200).send(subject)
 };
 
 exports.deleteSubject = (req, res) => {

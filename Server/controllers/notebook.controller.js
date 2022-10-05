@@ -4,27 +4,26 @@ const Notebook = db.notebook;
 
 exports.allNotebooks = (req, res) => {
   Notebook.find({}, (err, notebooks) => {
-    console.log("Found notebooks:", notebooks);
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
     res.status(200).send(notebooks);
   })
-  // .populate({ path: "subjects", 
-  //   populate: {
-  //     path: "categories",
-  //     model: 'Category',
-  //     populate: {
-  //       path: 'notes',
-  //       model: 'Note',
-  //       populate: {
-  //         path: 'comments',
-  //         model: 'Comment'
-  //       }
-  //     }
-  //   }
-  // })
+  .populate({ path: "subjects", 
+    populate: {
+      path: "categories",
+      model: 'Category',
+      populate: {
+        path: 'notes',
+        model: 'Note',
+        populate: {
+          path: 'comments',
+          model: 'Comment'
+        }
+      }
+    }
+  })
   .sort([["createdAt", "ascending"]]);
 };
 
@@ -121,7 +120,7 @@ exports.updateNotebook = (req, res) => {
       res.status(500).send({ message: err });
       return;
     } else {
-      console.log("notebook: ", notebook);
+      console.log("findbyid and update notebook: ", notebook);
     }
     res.status(200).send({ message: "Notebook updated successfully" });
   });

@@ -1,4 +1,4 @@
-import CommentService from "../services/comment.service";
+import axios from 'axios';
 
 export const comment = {
     namespaced: true,
@@ -6,65 +6,30 @@ export const comment = {
         comments: []
     }),
 
+    getters: {
+        allComments: state => state.comments
+    },
+
     actions: {
-
-        addComment({ commit }, comment) {
-            return CommentService.addComment(comment)
-            .then(comment => {
-                commit('addCommentSuccess', comment);
-                return Promise.resolve(comment);
-            },
-            error => {
-                commit('addCommentFailure', comment);
-                return Promise.reject(error);
-            })
+        async fetchComments({ commit }){
+            const response = await axios.get('http://localhost:8080/api/comment/allComments');
+            commit("setComments", response.data);
         },
 
-        updateComment({ commit }, comment) {
-            return CommentService.updateComment(comment)
-            .then(comment => {
-                commit('updateCommentSuccess', comment);
-                return Promise.resolve(comment);
-            },
-            error => {
-                commit('updateCommentFailure', comment);
-                return Promise.reject(error);
-            });
+        async addComment({ commit }, comment){
+            const response = await axios.post('http://localhost:8080/api/comment/addComment', comment);
+            commit("addNewComment", response.data);
         },
 
-        deleteComment({ commit }, comment) {
-            return CommentService.deleteComment(comment)
-            .then(comment => {
-                commit('deleteCommentSuccess', comment);
-                return Promise.resolve(comment);
-            },
-            error => {
-                commit('deleteCommentFailure', comment);
-                return Promise.reject(error);
-            })
-        },
-
-        allComments({ commit }, comment) {
-            return CommentService.getAllComments()
-            .then(comments => {
-                commit('getAllCommentsSuccess', comment);
-                return Promise.resolve(comments);
-            },
-            error => {
-                commit('getAllCommentsFailure', comment);
-                return Promise.reject(error);
-            });
-        },
+        async deleteComment({ commit }, id){
+            await axios.delete(`http://localhost:8080/api/comment/deleteComment/${id}`);
+            commit("deleteAComment", id);
+        }
     },
 
     mutations: {
-        addCommentSuccess() {},
-        addCommentFailure() {},
-        updateCommentSuccess() {},
-        updateCommentFailure() {},
-        getAllCommentsSuccess() {},
-        getAllCommentsFailure() {},
-        deleteCommentSuccess() {},
-        deleteCommentFailure() {},
+        setComments: (state, comments) => state.comments = comments,
+        addNewComment: (state, comment) => state.comments.push(comment),
+        deleteAComment: (state, id) => state.comments = state.comments.filter(comment => comment._id !== id)
     }
 }

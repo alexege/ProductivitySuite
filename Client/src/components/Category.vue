@@ -7,16 +7,17 @@
         </div>
 
         <!-- Add Note -->
-        <div class="add-note-container">
-            <input type="text" v-model="newNote.title" placeholder="Add Note" @keyup.enter="addNote(category._id)" />
-            <button @click="addNote(category._id)">
+        <form @submit.prevent="onSubmit" class="add-note-container">
+            <input type="text" v-model="newNote.title" placeholder="Add Note" @keyup.enter="addNote" />
+            <button>
                 <font-awesome-icon icon="check" />
             </button>
-        </div>
+        </form>
 
     </div>
 </template>
 <script>
+    import { mapActions } from 'vuex';
     import Note from '../components/Note.vue'
     export default {
         name: 'Category',
@@ -25,22 +26,37 @@
         data () {
             return {
                 newNote: {
-                    tittle: null
-                }
+                    title: null
+                },
+
+                // categoryId: this.note._id
             }
         },
 
         methods: {
-            addNote(categoryId) {
-                return this.$store
-                    .dispatch("note/addNote", { note: this.newNote, categoryId })
-                    .then(() => {
-                    this.newNote.title = "";
-                })
-                    .catch((err) => {
-                    console.log("Error adding note: ", err);
+            ...mapActions('notebook', ["fetchNotebooks"]),
+            ...mapActions('note', ["addNote"]),
+            onSubmit() {
+                this.addNote({
+                    note: this.newNote,
+                    categoryId: this.categoryId
                 });
-            },
+
+                this.newNote.title = '';
+
+                setTimeout(() => this.fetchNotebooks(), 10);
+            }
+
+            // addNote(categoryId) {
+            //     return this.$store
+            //         .dispatch("note/addNote", { note: this.newNote, categoryId })
+            //         .then(() => {
+            //         this.newNote.title = "";
+            //     })
+            //         .catch((err) => {
+            //         console.log("Error adding note: ", err);
+            //     });
+            // },
         }
 
     }

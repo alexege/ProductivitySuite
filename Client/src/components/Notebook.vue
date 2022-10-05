@@ -1,27 +1,35 @@
 <template>
     <div style="outline: 1px solid purple;">
         <h2 v-if="notebook && notebook.title">{{ notebook.title }}</h2>
-        
-        <div v-for="subject in subjects" :key="subject._id">
+
+        <div v-for="subject in notebook.subjects" :key="subject._id">
             <Subject :categories="subject.categories" :subject="subject"/>
         </div>
 
         <!-- Add Subject -->
-        <div class="add-comment-container">
+        <form @submit.prevent="onSubmit" class="add-notebook-container">
+            <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject" />
+            <button>
+                <font-awesome-icon icon="check" />
+            </button>
+        </form>
+
+        <!-- <div class="add-comment-container">
             <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject(notebook._id)" />
             <button @click="addSubject(notebook._id)">
                 <font-awesome-icon icon="check" />
             </button>
-        </div>
+        </div> -->
 
     </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
     import Subject from "../components/Subject.vue";
     export default {
         name: 'Notebook',
         components: {Subject},
-        props: ['subjects', 'notebook'],
+        props: ['notebook'],
         data () {
             return {
                 newSubject: {
@@ -31,17 +39,22 @@
         },
 
         methods: {
-            addSubject(notebookId) {
-                return this.$store
-                    .dispatch("subject/addSubject", {
-                    subject: this.newSubject,
-                    notebookId,
-                })
-                    .then(() => {(this.newSubject.title = "")})
-                    .catch((err) => {
-                    console.log("Error adding subject: ", err);
+            ...mapActions('notebook', ["fetchNotebooks"]),
+            ...mapActions('subject', ["addSubject"]),
+            onSubmit() {
+                this.addSubject({
+                    notebookId: this.notebook._id,
+                    title: this.newSubject.title
                 });
+                
+                this.newSubject.title = '';
+
+                setTimeout(() => this.fetchNotebooks(), 10);
             }
+        },
+
+        created() {
+            this.fetchNotebooks();
         }
     }
 </script>

@@ -46,6 +46,7 @@
     </div>
 </template>
 <script>
+    import { mapActions } from "vuex";
     import SidenavSubject from "../Sidenav/SidenavSubject.vue";
     export default {
         name: 'SidenavNotebook',
@@ -65,6 +66,8 @@
         },
 
         methods: {
+            ...mapActions('notebook', ["deleteNotebook"]),
+
             addSubject(notebookId) {
                 return this.$store
                     .dispatch("subject/addSubject", {
@@ -77,16 +80,16 @@
                 });
             },
 
-            deleteNotebook(id) {
-            return this.$store
-                .dispatch("notebook/deleteNotebook", id)
-                .then(() => {
-                this.getAllNotebooks();
-            })
-                .catch((err) => {
-                console.log(err);
-            });
-            },
+            // deleteNotebook(id) {
+            // return this.$store
+            //     .dispatch("notebook/deleteNotebook", id)
+            //     .then(() => {
+            //     this.getAllNotebooks();
+            // })
+            //     .catch((err) => {
+            //     console.log(err);
+            // });
+            // },
 
             toggleNotebookPrivacy(id) {
             return this.$store

@@ -8,8 +8,8 @@
 
         <!-- Add Category -->
         <div class="add-category-container">
-            <input type="text" v-model="newCategory.title" placeholder="Add Category" @keyup.enter="addCategory(subject._id)" />
-            <button @click="addCategory(subject._id)">
+            <input type="text" v-model="newCategory.title" placeholder="Add Category" @keyup.enter="onSubmit" />
+            <button @click.prevent="onSubmit">
                 <font-awesome-icon icon="check" />
             </button>
         </div>
@@ -17,6 +17,7 @@
     </div>
 </template>
 <script>
+    import { mapActions } from 'vuex';
     import Category from '../components/Category.vue'
     export default {
         name: 'Subject',
@@ -26,22 +27,25 @@
             return {
                 newCategory: {
                     title: null
-                }
+                },
+
+                subjectId: this.subject._id
             }
         },
 
         methods: {
-            addCategory(subjectId) {
-                return this.$store
-                    .dispatch("category/addCategory", {
+            ...mapActions('notebook', ["fetchNotebooks"]),
+            ...mapActions('category', ["addCategory"]),
+            onSubmit() {
+                this.addCategory({
                     category: this.newCategory,
-                    subjectId,
-                })
-                    .then(() => {(this.newCategory.title = "")})
-                    .catch((err) => {
-                    console.log("Error adding category: ", err);
+                    subjectId: this.subjectId
                 });
-            },
+
+                this.newCategory.title = '';
+
+                setTimeout(() => this.fetchNotebooks(), 10);
+            }
         }
     }
 </script>

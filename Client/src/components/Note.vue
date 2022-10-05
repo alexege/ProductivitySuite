@@ -7,16 +7,17 @@
         </div>
 
         <!-- Add Comment -->
-        <div class="add-comment-container">
-            <!-- <input type="text" v-model="newComment.title" placeholder="Add Comment" @keyup.enter="addComment(note._id)" /> -->
-            <textarea type="text" v-model="newComment.title" placeholder="Add Comment" ></textarea>
-            <button @click="addComment(note._id)">
+        <form @submit.prevent="onSubmit" class="add-comment-container">
+            <input type="text" v-model="newComment.title" placeholder="Add Comment" @keyup.enter="addComment" />
+            <button>
                 <font-awesome-icon icon="check" />
             </button>
-        </div>
+        </form>
+
     </div>
 </template>
 <script>
+    import { mapActions } from 'vuex';
     import Comment from '../components/Comment.vue'
     export default {
         name: 'Note',
@@ -26,22 +27,37 @@
             return {
                 newComment: {
                     title: null
-                }
+                },
+
+                // subjectId: this.comment._id
             }
         },
 
         methods: {
-            addComment(noteId) {
-            console.log("noteId:", noteId);
-            return this.$store
-                .dispatch("comment/addComment", { comment: this.newComment, noteId })
-                .then(() => {
-                this.newComment.title = "";
-            })
-                .catch((err) => {
-                console.log("Error adding comment: ", err);
-            });
+            ...mapActions('notebook', ["fetchNotebooks"]),
+            ...mapActions('comment', ["addComment"]),
+            onSubmit() {
+                this.addComment({
+                    category: this.newComment,
+                    subjectId: this.subjectId
+                });
+
+                this.newComment.title = '';
+
+                setTimeout(() => this.fetchNotebooks(), 10);
             }
+            
+            // addComment(noteId) {
+            // console.log("noteId:", noteId);
+            // return this.$store
+            //     .dispatch("comment/addComment", { comment: this.newComment, noteId })
+            //     .then(() => {
+            //     this.newComment.title = "";
+            // })
+            //     .catch((err) => {
+            //     console.log("Error adding comment: ", err);
+            // });
+            // }
         }
     }
 </script>

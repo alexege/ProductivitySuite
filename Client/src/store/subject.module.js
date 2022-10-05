@@ -1,24 +1,45 @@
+import axios from "axios";
 import SubjectService from "../services/subject.service";
 
 export const subject = {
     namespaced: true,
-    state: () => ({
+    state: {
         subjects: []
-    }),
+    },
+
+    getters: {
+        allSubjects: state => state.subjects
+    },
 
     actions: {
 
-        addSubject({ commit }, subject) {
-            return SubjectService.addSubject(subject)
-            .then(subject => {
-                commit('addSubjectSuccess', subject);
-                return Promise.resolve(subject);
-            },
-            error => {
-                commit('addSubjectFailure', subject);
-                return Promise.reject(error);
-            })
+        async fetchSubjects({ commit }){
+            const response = await axios.get('http://localhost:8080/api/subject/allSubjects');
+            commit("setSubjects", response.data);
         },
+
+        async addSubject({ commit }, subject){
+            console.log('[subject.module] ', subject);
+            const response = await axios.post('http://localhost:8080/api/subject/addSubject', subject);
+            commit("addNewSubject", response.data);
+        },
+
+        async deleteSubject({ commit }, id){
+            await axios.delete(`http://localhost:8080/api/subject/deleteSubject/${id}`);
+            commit("deleteASubject", id);
+        },
+
+        // addSubject({ commit }, subject) {
+        //     return SubjectService.addSubject(subject)
+        //     .then(subject => {
+        //         commit('addSubjectSuccess', subject);
+        //         return Promise.resolve(subject);
+        //     },
+        //     error => {
+        //         commit('addSubjectFailure', subject);
+        //         return Promise.reject(error);
+        //     })
+        // },
 
         updateSubject({ commit }, subject) {
             return SubjectService.updateSubject(subject)
@@ -32,17 +53,17 @@ export const subject = {
             });
         },
 
-        deleteSubject({ commit }, subject) {
-            return SubjectService.deleteSubject(subject)
-            .then(subject => {
-                commit('deleteSubjectSuccess', subject);
-                return Promise.resolve(subject);
-            },
-            error => {
-                commit('deleteSubjectFailure', subject);
-                return Promise.reject(error);
-            })
-        },
+        // deleteSubject({ commit }, subject) {
+        //     return SubjectService.deleteSubject(subject)
+        //     .then(subject => {
+        //         commit('deleteSubjectSuccess', subject);
+        //         return Promise.resolve(subject);
+        //     },
+        //     error => {
+        //         commit('deleteSubjectFailure', subject);
+        //         return Promise.reject(error);
+        //     })
+        // },
 
         toggleSubjectPrivacy({ commit }, subject) {
             return SubjectService.toggleSubjectPrivacy(subject)
@@ -70,6 +91,15 @@ export const subject = {
     },
 
     mutations: {
+
+        setSubjects: (state, subjects) => {
+            state.subjects = subjects;
+        },
+
+        addNewSubject: (state, subject) => state.subjects.push(subject),
+
+        deleteASubject: (state, id) => state.subjects = state.subjects.filter(subject => subject._id !== id),
+
         addSubjectSuccess() {},
         addSubjectFailure() {},
         updateSubjectSuccess() {},

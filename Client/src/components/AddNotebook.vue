@@ -1,8 +1,7 @@
 <template>
     <div>
-        <h2>Add Notebook</h2>
         <form @submit.prevent="onSubmit" class="add-notebook">
-            <input type="text" v-model="newNotebook.title" @keyup.enter="onSubmit" placeholder="Add Notebook">
+            <input type="text" v-model="newNotebook.title" placeholder="Add Notebook">
             <!-- <input type="submit" value="submit"> -->
             <button><font-awesome-icon icon="check" @click="onSubmit" /></button>
         </form>
@@ -22,7 +21,8 @@ export default {
     },
     methods:{
         ...mapActions('notebook', ["addNotebook"]),
-        onSubmit() {
+        onSubmit(e) {
+            e.preventDefault();
             this.addNotebook({
                 title: this.newNotebook.title
             });
