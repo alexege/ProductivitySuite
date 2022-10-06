@@ -11,7 +11,7 @@ exports.allNotes = (req, res) => {
       res.status(500).send({ message: err });
       return;
     }
-    res.status(200).send({ note });
+    res.status(200).send({note});
   })
 //   .populate("comments")
   .sort([["createdAt", "descending"]]);
@@ -77,9 +77,7 @@ exports.addNote = (req, res) => {
        });
     }
   })
-    res.status(200).send({
-        note
-  });
+    res.status(200).send(note);
 };
 
 exports.deleteNote = (req, res) => {

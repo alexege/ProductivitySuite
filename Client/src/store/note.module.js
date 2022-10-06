@@ -1,4 +1,5 @@
-import NoteService from "../services/note.service";
+// import NoteService from "../services/note.service";
+import axios from 'axios';
 
 export const note = {
     namespaced: true,
@@ -6,65 +7,89 @@ export const note = {
         notes: []
     }),
 
+    getters: {
+        allNotes: state => state.notes
+    },
+
     actions: {
 
-        addNote({ commit }, note) {
-            return NoteService.addNote(note)
-            .then(note => {
-                commit('addNoteSuccess', note);
-                return Promise.resolve(note);
-            },
-            error => {
-                commit('addNoteFailure', note);
-                return Promise.reject(error);
-            })
+        async fetchNotes({ commit }){
+            const response = await axios.get('http://localhost:8080/api/note/allNotes');
+            commit("setNotes", response.data);
         },
 
-        updateNote({ commit }, note) {
-            return NoteService.updateNote(note)
-            .then(note => {
-                commit('updateNoteSuccess', note);
-                return Promise.resolve(note);
-            },
-            error => {
-                commit('updateNoteFailure', note);
-                return Promise.reject(error);
-            });
+        async addNote({ commit }, note){
+            const response = await axios.post('http://localhost:8080/api/note/addNote', note);
+            commit("addNewNote", response.data);
         },
 
-        deleteNote({ commit }, note) {
-            return NoteService.deleteNote(note)
-            .then(note => {
-                commit('deleteNoteSuccess', note);
-                return Promise.resolve(note);
-            },
-            error => {
-                commit('deleteNoteFailure', note);
-                return Promise.reject(error);
-            })
-        },
+        async deleteNote({ commit }, id){
+            await axios.delete(`http://localhost:8080/api/note/deleteNote/${id}`);
+            commit("deleteANote", id);
+        }
 
-        allNotes({ commit }, note) {
-            return NoteService.getAllNotes()
-            .then(notes => {
-                commit('getAllNotesSuccess', note);
-                return Promise.resolve(notes);
-            },
-            error => {
-                commit('getAllNotesFailure', note);
-                return Promise.reject(error);
-            });
-        },
+        // addNote({ commit }, note) {
+        //     return NoteService.addNote(note)
+        //     .then(note => {
+        //         commit('addNoteSuccess', note);
+        //         return Promise.resolve(note);
+        //     },
+        //     error => {
+        //         commit('addNoteFailure', note);
+        //         return Promise.reject(error);
+        //     })
+        // },
+
+        // updateNote({ commit }, note) {
+        //     return NoteService.updateNote(note)
+        //     .then(note => {
+        //         commit('updateNoteSuccess', note);
+        //         return Promise.resolve(note);
+        //     },
+        //     error => {
+        //         commit('updateNoteFailure', note);
+        //         return Promise.reject(error);
+        //     });
+        // },
+
+        // deleteNote({ commit }, note) {
+        //     return NoteService.deleteNote(note)
+        //     .then(note => {
+        //         commit('deleteNoteSuccess', note);
+        //         return Promise.resolve(note);
+        //     },
+        //     error => {
+        //         commit('deleteNoteFailure', note);
+        //         return Promise.reject(error);
+        //     })
+        // },
+
+        // allNotes({ commit }, note) {
+        //     return NoteService.getAllNotes()
+        //     .then(notes => {
+        //         commit('getAllNotesSuccess', note);
+        //         return Promise.resolve(notes);
+        //     },
+        //     error => {
+        //         commit('getAllNotesFailure', note);
+        //         return Promise.reject(error);
+        //     });
+        // },
     },
 
     mutations: {
-        addNoteSuccess() {},
-        addNoteFailure() {},
-        updateNoteSuccess() {},
-        updateNoteFailure() {},
-        getAllNotesSuccess() {},
-        getAllNotesFailure() {},
-        deleteNoteSuccess() {},
-        deleteNoteFailure() {},
+
+        setNotes: (state, notes) => state.notes = notes,
+        addNewNote: (state, note) => state.notes.push(note),
+        deleteANote: (state, id) => state.notes = state.notes.filter(note => note._id !== id)
+
+        // addNoteSuccess() {},
+        // addNoteFailure() {},
+        // updateNoteSuccess() {},
+        // updateNoteFailure() {},
+        // getAllNotesSuccess() {},
+        // getAllNotesFailure() {},
+        // deleteNoteSuccess() {},
+        // deleteNoteFailure() {},
     }
 }

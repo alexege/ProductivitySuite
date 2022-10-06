@@ -15,7 +15,7 @@ class NoteService {
   }
 
   addNote(data) {
-    console.log("data:", data);
+    console.log("adding note:", data);
     const user = JSON.parse(localStorage.getItem("user"));
 
     return axios

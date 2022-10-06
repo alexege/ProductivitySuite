@@ -6,6 +6,8 @@
             <Note :comments="note.comments" :note="note"/>
         </div>
 
+        {{ notes }}
+
         <!-- Add Note -->
         <form @submit.prevent="onSubmit" class="add-note-container">
             <input type="text" v-model="newNote.title" placeholder="Add Note" @keyup.enter="addNote" />
