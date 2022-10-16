@@ -21,7 +21,7 @@ exports.allComments = (req, res) => {
 exports.addComment = (req, res) => {
     console.log("req.body:", req.body);
   const comment = new Comment({
-    title: req.body.title,
+    title: req.body.comment.title,
     isPublic: req.body.isPublic
   });
 

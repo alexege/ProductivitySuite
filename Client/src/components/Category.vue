@@ -6,8 +6,6 @@
             <Note :comments="note.comments" :note="note"/>
         </div>
 
-        {{ notes }}
-
         <!-- Add Note -->
         <form @submit.prevent="onSubmit" class="add-note-container">
             <input type="text" v-model="newNote.title" placeholder="Add Note" @keyup.enter="addNote" />
@@ -29,9 +27,7 @@
             return {
                 newNote: {
                     title: null
-                },
-
-                // categoryId: this.note._id
+                }
             }
         },
 
@@ -41,7 +37,7 @@
             onSubmit() {
                 this.addNote({
                     note: this.newNote,
-                    categoryId: this.categoryId
+                    categoryId: this.category._id
                 });
 
                 this.newNote.title = '';

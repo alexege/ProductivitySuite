@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <!-- <pre>{{ allNotebooks }}</pre> -->
         <div class="sideNav">
 
             <div v-for="notebook in allNotebooks" :key="notebook._id">

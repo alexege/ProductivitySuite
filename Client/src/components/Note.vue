@@ -27,9 +27,7 @@
             return {
                 newComment: {
                     title: null
-                },
-
-                // subjectId: this.comment._id
+                }
             }
         },
 
@@ -38,8 +36,8 @@
             ...mapActions('comment', ["addComment"]),
             onSubmit() {
                 this.addComment({
-                    category: this.newComment,
-                    subjectId: this.subjectId
+                    comment: this.newComment,
+                    noteId: this.note._id //This comes from the props
                 });
 
                 this.newComment.title = '';

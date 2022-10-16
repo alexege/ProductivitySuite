@@ -1,5 +1,6 @@
 <template>
     <div style="outline: 1px solid red;">
+        {{ comment }}
         <pre>{{ comment.title }}</pre>
     </div>
 </template>
