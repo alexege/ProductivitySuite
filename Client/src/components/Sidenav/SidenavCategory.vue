@@ -72,7 +72,7 @@
             return this.$store
                 .dispatch("category/deleteCategory", id)
                 .then(() => {
-                this.getAllCategorys();
+                // this.getAllCategorys();
             })
                 .catch((err) => {
                 console.log(err);
@@ -103,7 +103,7 @@
                 category: updateCategory,
             })
                 .then(() => {
-                this.getAllCategorys();
+                //Do nothing
             });
             },
         }

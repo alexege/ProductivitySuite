@@ -20,7 +20,7 @@ exports.allNotes = (req, res) => {
 exports.addNote = (req, res) => {
     console.log("req.body:", req.body);
   const note = new Note({
-    title: req.body.title,
+    title: req.body.note.title,
     isPublic: req.body.isPublic
   });
 

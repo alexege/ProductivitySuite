@@ -7,19 +7,12 @@
         </div>
 
         <!-- Add Subject -->
-        <form @submit.prevent="onSubmit" class="add-notebook-container">
+        <form @submit.prevent="onSubmit" class="add-subject-container">
             <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject" />
             <button>
                 <font-awesome-icon icon="check" />
             </button>
         </form>
-
-        <!-- <div class="add-comment-container">
-            <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject(notebook._id)" />
-            <button @click="addSubject(notebook._id)">
-                <font-awesome-icon icon="check" />
-            </button>
-        </div> -->
 
     </div>
 </template>
@@ -65,11 +58,15 @@ import { mapActions } from 'vuex';
         padding: .25em;
     }
 
-    .add-comment-container {
+    div {
+        padding: .25em;
+    }
+
+    .add-subject-container {
         display: flex;
     }
 
-    .add-comment-container input {
+    .add-subject-container input {
         width: 100%;
     }
 </style>

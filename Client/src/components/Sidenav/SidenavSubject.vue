@@ -80,7 +80,7 @@
             return this.$store
                 .dispatch("subject/deleteSubject", id)
                 .then(() => {
-                this.getAllSubjects();
+                // this.getAllSubjects();
             })
                 .catch((err) => {
                 console.log(err);
