@@ -1,7 +1,7 @@
 <template>
     <div style="outline: 1px solid blue;">
         <h3 v-if="subject && subject.title">{{ subject.title }}</h3>
-        
+
         <div v-for="category in categories" :key="category._id">
             <Category :notes="category.notes" :category="category"/>
         </div>
@@ -29,7 +29,7 @@
                     title: null
                 },
 
-                subjectId: this.subject._id
+                // subjectId: this.subject._id
             }
         },
 
@@ -39,11 +39,11 @@
             onSubmit() {
                 this.addCategory({
                     category: this.newCategory,
-                    subjectId: this.subjectId
+                    subjectId: this.subject._id
                 });
 
                 this.newCategory.title = '';
-
+                console.log("Submitting category");
                 setTimeout(() => this.fetchNotebooks(), 10);
             }
         }

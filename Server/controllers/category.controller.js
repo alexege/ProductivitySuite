@@ -57,6 +57,8 @@ exports.addCategory = (req, res) => {
     //   );
     // }
 
+    console.log("the id of the subject is: ", req.body.subjectId);
+
     if (req.body.subjectId) {
       Subject.findOne(
         { _id: { $in: req.body.subjectId },

@@ -8,7 +8,7 @@
 
         <!-- Add Comment -->
         <form @submit.prevent="onSubmit" class="add-comment-container">
-            <input type="text" v-model="newComment.title" placeholder="Add Comment" @keyup.enter="addComment" />
+            <input type="text" v-model="newComment.title" placeholder="Add Comment" @keyup.enter="onSubmit" />
             <button>
                 <font-awesome-icon icon="check" />
             </button>
