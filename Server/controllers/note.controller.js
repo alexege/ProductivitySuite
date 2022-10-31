@@ -59,6 +59,8 @@ exports.addNote = (req, res) => {
     //   );
     // }
 
+    console.log("Firing add note");
+
     if (req.body.categoryId) {
       Category.findOne(
         { _id: { $in: req.body.categoryId },

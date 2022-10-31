@@ -7,12 +7,12 @@
         </div>
 
         <!-- Add Comment -->
-        <form @submit.prevent="onSubmit" class="add-comment-container">
+        <div class="add-comment-container">
             <input type="text" v-model="newComment.title" placeholder="Add Comment" @keyup.enter="onSubmit" />
-            <button>
+            <button @click.prevent="onSubmit">
                 <font-awesome-icon icon="check" />
             </button>
-        </form>
+        </div>
 
     </div>
 </template>

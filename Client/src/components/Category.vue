@@ -7,12 +7,12 @@
         </div>
 
         <!-- Add Note -->
-        <form @submit.prevent="onSubmit" class="add-note-container">
-            <input type="text" v-model="newNote.title" placeholder="Add Note" @keyup.enter="addNote" />
-            <button>
+        <div class="add-note-container">
+            <input type="text" v-model="newNote.title" placeholder="Add Note" @keyup.enter="onSubmit" />
+            <button @click.prevent="onSubmit">
                 <font-awesome-icon icon="check" />
             </button>
-        </form>
+        </div>
 
     </div>
 </template>
