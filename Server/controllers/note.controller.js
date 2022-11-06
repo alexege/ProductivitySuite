@@ -94,11 +94,32 @@ exports.deleteNote = (req, res) => {
   });
 };
 
+exports.toggleNotePrivacy = (req, res) => {
+  Note.findOne({ _id: req.params.id }, (err, note) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    note.isPublic = !note.isPublic;
+    note.save((err, note) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      res.status(200).send({
+        note
+      })
+    });
+  })
+}
+
 exports.updateNote = (req, res) => {
+  console.log("updating note", req.body);
   const update = {
-    title: req.body.title,
-    description: req.body.description,
-    isPublic: req.body.isPublic
+    title: req.body.note.title,
+    isPublic: req.body.note.isPublic
   };
 
   Note.findByIdAndUpdate({ _id: req.params.id }, update, (err, note) => {

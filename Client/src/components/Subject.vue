@@ -1,7 +1,10 @@
 <template>
-    <div style="outline: 1px solid blue;">
-        <h3 v-if="subject && subject.title">{{ subject.title }}</h3>
-
+    <div class="subject">
+        <div class="subject-container">
+            <div class="subject-body" v-if="!showSubject">
+                {{ subject.title }}
+            </div>
+        </div>
         <div v-for="category in categories" :key="category._id">
             <Category :notes="category.notes" :category="category"/>
         </div>
@@ -13,7 +16,6 @@
                 <font-awesome-icon icon="check" />
             </button>
         </div>
-
     </div>
 </template>
 <script>
@@ -28,8 +30,10 @@
                 newCategory: {
                     title: null
                 },
-
-                // subjectId: this.subject._id
+                newSubject: {
+                    title: this.subject.title
+                },
+                showSubject: null
             }
         },
 

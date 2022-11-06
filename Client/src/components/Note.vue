@@ -1,7 +1,39 @@
 <template>
-    <div style="outline: 1px solid orange;">
-        <h5 v-if="note && note.title">{{ note.title }}</h5>
+    <div class="note">
+        <div class="note-container" style="outline:1px solid blue;">
+        <div class="note-body" v-if="!showNote">
+            {{ note.title }}
+        </div>
 
+        <div class="note-actions" v-if="!showNote">
+            <button v-if="note.isPublic">
+                <font-awesome-icon icon="unlock" @click="toggleNotePrivacy(note._id)"/>
+            </button>
+            <button v-else>
+                <font-awesome-icon icon="lock" @click="toggleNotePrivacy(note._id)"/>
+            </button>
+
+            <button @click="showNote = note._id">
+                <font-awesome-icon icon="pen" />
+            </button>
+            <button @click="onDelete()">
+                <font-awesome-icon icon="trash" />
+            </button>
+        </div>
+
+        <div class="update-note" v-show="showNote == note._id">
+          <input type="text" v-model="newNote.title" />
+          <button @click="updateNote(note)">
+            <font-awesome-icon icon="upload" />
+          </button>
+          <button>
+            <font-awesome-icon icon="minus" @click="showNote = null"/>
+          </button>
+        </div>
+
+    </div>
+
+        
         <div v-for="comment in comments" :key="comment._id">
             <Comment :comment="comment"/>
         </div>
@@ -15,6 +47,7 @@
         </div>
 
     </div>
+
 </template>
 <script>
     import { mapActions } from 'vuex';
@@ -27,12 +60,17 @@
             return {
                 newComment: {
                     title: null
-                }
+                },
+                newNote:{
+                    title: this.note.title
+                },
+                showNote: null,
             }
         },
 
         methods: {
             ...mapActions('notebook', ["fetchNotebooks"]),
+            ...mapActions('note', ["deleteNote"]),
             ...mapActions('comment', ["addComment"]),
             onSubmit() {
                 this.addComment({
@@ -43,19 +81,41 @@
                 this.newComment.title = '';
 
                 setTimeout(() => this.fetchNotebooks(), 10);
-            }
+            },
+
+            onDelete() {
+                this.deleteNote(this.note._id);
+
+                setTimeout(() => this.fetchNotebooks(), 10);
+            },
             
-            // addComment(noteId) {
-            // console.log("noteId:", noteId);
-            // return this.$store
-            //     .dispatch("comment/addComment", { comment: this.newComment, noteId })
-            //     .then(() => {
-            //     this.newComment.title = "";
-            // })
-            //     .catch((err) => {
-            //     console.log("Error adding comment: ", err);
-            // });
-            // }
+            toggleNotePrivacy(id) {
+                console.log("toggling note privacy");
+                return this.$store
+                .dispatch("note/toggleNotePrivacy", id)
+                .then(() => {
+                    setTimeout(() => this.fetchNotebooks(), 10);
+                })
+            },
+
+            updateNote(note) {
+                console.log("Updating note: ", note);
+                this.showNote = null;
+
+                let updateNote = {
+                    title: this.newNote.title,
+                    isPublic: note.isPublic,
+                };
+                //Toggle editMode if using a modal
+                return this.$store
+                    .dispatch("note/updateNote", {
+                    id: note._id,
+                    note: updateNote,
+                })
+                .then(() => {
+                    setTimeout(() => this.fetchNotebooks(), 10);
+                });
+            }
         }
     }
 </script>
@@ -74,5 +134,31 @@
 
     .add-comment-container input, textarea {
         width: 100%;
+    }
+
+    .note {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .note-body {
+        flex: 2;
+    }
+
+    .note-container {
+       display: flex;
+    }
+
+    .note-actions {
+        outline: 1px solid red;
+    }
+
+    .update-note {
+        display: flex;
+        flex: 1;
+    }
+
+    .update-note input {
+        flex: 1;
     }
 </style>

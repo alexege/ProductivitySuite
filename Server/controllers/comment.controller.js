@@ -97,11 +97,33 @@ exports.deleteComment = (req, res) => {
   });
 };
 
+exports.toggleCommentPrivacy = (req, res) => {
+  Comment.findOne({ _id: req.params.id }, (err, comment) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    comment.isPublic = !comment.isPublic;
+    comment.save((err, comment) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      res.status(200).send({
+        comment
+      })
+    });
+  })
+}
+
 exports.updateComment = (req, res) => {
+  console.log("req.body", req.body);
+  console.log("req.params", req.params);
   const update = {
-    title: req.body.title,
-    description: req.body.description,
-    isPublic: req.body.isPublic
+    title: req.body.comment.title,
+    isPublic: req.body.comment.isPublic
   };
 
   Comment.findByIdAndUpdate({ _id: req.params.id }, update, (err, comment) => {

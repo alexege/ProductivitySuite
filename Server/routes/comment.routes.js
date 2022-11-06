@@ -13,6 +13,7 @@ module.exports = function(app) {
 app.get("/api/comment/allComments", controller.allComments);
 app.post("/api/comment/addComment", controller.addComment);
 app.post("/api/comment/updateComment/:id", controller.updateComment);
+app.put("/api/comment/toggleCommentPrivacy/:id", controller.toggleCommentPrivacy);
 app.delete("/api/comment/deleteComment/:id", controller.deleteComment);
 
 };

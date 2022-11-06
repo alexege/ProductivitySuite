@@ -110,9 +110,8 @@ exports.toggleNotebookPrivacy = (req, res) => {
 
 exports.updateNotebook = (req, res) => {
   const update = {
-    title: req.body.title,
-    description: req.body.description,
-    isPublic: req.body.isPublic
+    title: req.body.notebook.title,
+    isPublic: req.body.notebook.isPublic
   };
 
   Notebook.findByIdAndUpdate({ _id: req.params.id }, update, (err, notebook) => {

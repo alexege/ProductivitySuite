@@ -14,5 +14,6 @@ app.get("/api/note/allNotes", controller.allNotes);
 app.post("/api/note/addNote", controller.addNote);
 app.post("/api/note/updateNote/:id", controller.updateNote);
 app.delete("/api/note/deleteNote/:id", controller.deleteNote);
+app.put("/api/note/toggleNotePrivacy/:id", controller.toggleNotePrivacy);
 
 };

@@ -26,6 +26,18 @@ export const note = {
         async deleteNote({ commit }, id){
             await axios.delete(`http://localhost:8080/api/note/deleteNote/${id}`);
             commit("deleteANote", id);
+        },
+
+        async updateNote({ commit }, note) {
+            console.log("updating note: module", note);
+            const response = await axios.post(`http://localhost:8080/api/note/updateNote/${note.id}`, note);
+            commit("updateNote", response.data);
+        },
+
+        async toggleNotePrivacy({ commit }, id) {
+            console.log("Attempting to toggle note privacy");
+            const response = await axios.put(`http://localhost:8080/api/note/toggleNotePrivacy/${id}`);
+            commit("toggleNotePrivacy", response.data);
         }
 
         // addNote({ commit }, note) {
@@ -81,7 +93,10 @@ export const note = {
 
         setNotes: (state, notes) => state.notes = notes,
         addNewNote: (state, note) => state.notes.push(note),
-        deleteANote: (state, id) => state.notes = state.notes.filter(note => note._id !== id)
+        deleteANote: (state, id) => state.notes = state.notes.filter(note => note._id !== id),
+
+        updateNote: (state, note) => state.notes = note,
+        toggleNotePrivacy: (state, note) => state.notes = note,
 
         // addNoteSuccess() {},
         // addNoteFailure() {},
