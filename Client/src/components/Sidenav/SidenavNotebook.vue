@@ -1,7 +1,7 @@
 <template>
-    <div @mouseenter="isHovering = true" @mouseleave="isHovering = false">
+    <div @mouseenter="isHovering = true" @mouseleave="isHovering = false" style="border: 1px solid red;">
         <div v-if="notebook && notebook.title" class="title">
-            {{ notebook.title }}
+            {{ notebook.title }}<hr>
         
         <div class="notebook-actions" v-show="isHovering">
             <button v-if="notebook.isPublic">
@@ -66,15 +66,18 @@
         },
 
         methods: {
-            ...mapActions('notebook', ["deleteNotebook"]),
+            ...mapActions('notebook', ["fetchNotebooks", "deleteNotebook"]),
 
             addSubject(notebookId) {
                 return this.$store
                     .dispatch("subject/addSubject", {
-                    subject: this.newSubject,
+                    title: this.newSubject.title,
                     notebookId,
                 })
-                    .then(() => {(this.newSubject.title = "")})
+                    .then(() => {
+                        this.newSubject.title = "";
+                        setTimeout(() => this.fetchNotebooks(), 10);
+                    })
                     .catch((err) => {
                     console.log("Error adding subject: ", err);
                 });
@@ -95,10 +98,11 @@
             return this.$store
                 .dispatch("notebook/toggleNotebookPrivacy", id)
                 .then(() => {
-            })
+                    setTimeout(() => this.fetchNotebooks(), 10);
+                })
                 .catch((err) => {
-                console.log(err);
-            });
+                    console.log(err);
+                });
             },
 
             updateNotebook(notebook) {
@@ -115,13 +119,7 @@
                 notebook: updateNotebook,
             })
                 .then(() => {
-                this.getAllNotebooks();
-            });
-            },
-
-            getAllNotebooks() {
-            return this.$store.dispatch("notebook/allNotebooks").then((res) => {
-                this.allNotebooks = res.data.notebooks;
+                    setTimeout(() => this.fetchNotebooks(), 10);
             });
         },
         }

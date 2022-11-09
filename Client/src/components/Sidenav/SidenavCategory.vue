@@ -37,6 +37,7 @@
     </div>
 </template>
 <script>
+    import { mapActions } from 'vuex';
     import SidenavCategory from '../Sidenav/SidenavCategory.vue'
     export default {
         name: 'SidenavCategory',
@@ -56,13 +57,18 @@
         },
 
         methods: {
+            ...mapActions('notebook', ["fetchNotebooks"]),
+
             addCategory(categoryId) {
                 return this.$store
                     .dispatch("category/addCategory", {
                     category: this.newCategory,
                     categoryId,
                 })
-                    .then(() => {(this.newCategory.title = "")})
+                    .then(() => {
+                        this.newCategory.title = "";
+                        setTimeout(() => this.fetchNotebooks(), 10);
+                    })
                     .catch((err) => {
                     console.log("Error adding category: ", err);
                 });
@@ -72,8 +78,8 @@
             return this.$store
                 .dispatch("category/deleteCategory", id)
                 .then(() => {
-                // this.getAllCategorys();
-            })
+                    setTimeout(() => this.fetchNotebooks(), 10);
+                })
                 .catch((err) => {
                 console.log(err);
             });
@@ -83,6 +89,7 @@
             return this.$store
                 .dispatch("category/toggleCategoryPrivacy", id)
                 .then(() => {
+                    setTimeout(() => this.fetchNotebooks(), 10);
             })
                 .catch((err) => {
                 console.log(err);
@@ -103,7 +110,7 @@
                 category: updateCategory,
             })
                 .then(() => {
-                //Do nothing
+                    setTimeout(() => this.fetchNotebooks(), 10);
             });
             },
         }
@@ -144,7 +151,6 @@
     }
 
     .indent-icon {
-        /* outline: 1px solid red; */
         margin: 0;
         margin-bottom: 1em;
         padding-left: 1.5em;

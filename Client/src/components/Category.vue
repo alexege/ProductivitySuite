@@ -140,10 +140,6 @@
        display: flex;
     }
 
-    .category-actions {
-        outline: 1px solid red;
-    }
-
     .update-category {
         display: flex;
         flex: 1;

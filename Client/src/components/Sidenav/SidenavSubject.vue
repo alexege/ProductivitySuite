@@ -45,6 +45,7 @@
     </div>
 </template>
 <script>
+    import { mapActions } from 'vuex';
     import SidenavCategory from '../Sidenav/SidenavCategory.vue'
     export default {
         name: 'SidenavSubject',
@@ -64,13 +65,18 @@
         },
 
         methods: {
+            ...mapActions('notebook', ["fetchNotebooks"]),
+
             addCategory(subjectId) {
                 return this.$store
                     .dispatch("category/addCategory", {
                     category: this.newCategory,
                     subjectId,
                 })
-                    .then(() => {(this.newCategory.title = "")})
+                    .then(() => {
+                        this.newCategory.title = "";
+                        setTimeout(() => this.fetchNotebooks(), 10);
+                    })
                     .catch((err) => {
                     console.log("Error adding category: ", err);
                 });
@@ -80,7 +86,7 @@
             return this.$store
                 .dispatch("subject/deleteSubject", id)
                 .then(() => {
-                // this.getAllSubjects();
+                    setTimeout(() => this.fetchNotebooks(), 10);
             })
                 .catch((err) => {
                 console.log(err);
@@ -91,6 +97,7 @@
             return this.$store
                 .dispatch("subject/toggleSubjectPrivacy", id)
                 .then(() => {
+                    setTimeout(() => this.fetchNotebooks(), 10);
             })
                 .catch((err) => {
                 console.log(err);
@@ -111,7 +118,7 @@
                 subject: updateSubject,
             })
                 .then(() => {
-                this.getAllSubjects();
+                    setTimeout(() => this.fetchNotebooks(), 10);
             });
             },
         }
@@ -152,7 +159,6 @@
     }
 
     .indent-icon {
-        /* outline: 1px solid red; */
         margin: 0;
         margin-bottom: 1em;
         padding-left: 1.5em;

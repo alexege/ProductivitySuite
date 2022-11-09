@@ -149,10 +149,6 @@
        display: flex;
     }
 
-    .note-actions {
-        outline: 1px solid red;
-    }
-
     .update-note {
         display: flex;
         flex: 1;

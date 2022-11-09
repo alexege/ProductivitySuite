@@ -100,10 +100,6 @@ import { mapActions } from 'vuex'
         flex: 2;
     }
 
-    .comment-actions {
-        outline: 1px solid red;
-    }
-
     .update-comment {
         display: flex;
         flex: 1;

@@ -42,6 +42,8 @@ export const notebook = {
     mutations: {
         setNotebooks: (state, notebooks) => state.notebooks = notebooks,
         addNewNotebook: (state, notebook) => state.notebooks.push(notebook),
-        deleteANotebook: (state, id) => state.notebooks = state.notebooks.filter(notebook => notebook._id !== id)
+        deleteANotebook: (state, id) => state.notebooks = state.notebooks.filter(notebook => notebook._id !== id),
+        updateNotebook: (state, notebook)  => state.notebooks.push(notebook),
+        toggleNotebookPrivacy: (state, notebook)  => state.notebooks.push(notebook)
     }
 }

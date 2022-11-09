@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="cont">
         <!-- <pre>{{ allNotebooks }}</pre> -->
         <div class="sideNav">
 
@@ -12,8 +12,8 @@
             </div>
             
             <div class="add-notebook">
-                <input type="text" v-model="newNotebook.title" placeholder="Add Notebook" @keyup.enter="addNotebook" />
-                <button @click="addNotebook"><font-awesome-icon icon="check" /></button>
+                <input type="text" v-model="newNotebook.title" placeholder="Add Notebook" @keyup.enter="onSubmit" />
+                <button @click="onSubmit"><font-awesome-icon icon="check" /></button>
             </div>
         
         </div>
@@ -148,7 +148,7 @@ export default {
             return this.$store
                 .dispatch("notebook/toggleNotebookPrivacy", id)
                 .then(() => {
-                this.getAll();
+                // this.getAll();
             })
                 .catch((err) => {
                 console.log(err);
@@ -162,7 +162,8 @@ export default {
                 notebookId,
             })
                 .then(() => {
-                (this.newSubject.title = ""), this.getAll();
+                    this.newSubject.title = "";
+                    setTimeout(() => this.fetchNotebooks(), 10);
             })
                 .catch((err) => {
                 console.log("Error adding subject: ", err);
@@ -187,7 +188,7 @@ export default {
                 subject: updateSubject,
             })
                 .then(() => {
-                this.getAllSubjects();
+                // this.getAllSubjects();
             });
         },
         deleteSubject(id) {
@@ -440,7 +441,9 @@ export default {
   z-index: 2;
   overflow: auto;
 }
-.container {
+.cont {
+  margin: 0;
+  padding: 0;
   display: flex;
   min-height: calc(100vh - 56px);
 }
@@ -449,7 +452,7 @@ export default {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 1rem;
+  /* padding: 1rem; */
   max-height: calc(100vh - 56px);
   overflow: auto;
 }

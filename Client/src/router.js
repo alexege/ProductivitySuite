@@ -45,11 +45,6 @@ export const router = new Router({
       path: '/user',
       name: 'user',
       component: () => import('./views/BoardUser.vue')
-    },
-    {
-      path: '/notebooks',
-      name: 'notebooks',
-      component: () => import('./views/Notebooks.vue')
     }
   ]
 });

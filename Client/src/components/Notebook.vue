@@ -73,11 +73,12 @@ import { mapActions } from 'vuex';
                 this.addSubject({
                     notebookId: this.notebook._id,
                     title: this.newSubject.title
-                });
+                })
+                .then(() => {
+                    this.newSubject.title = '';
+                    setTimeout(() => this.fetchNotebooks(), 10);
+                })
                 
-                this.newSubject.title = '';
-
-                setTimeout(() => this.fetchNotebooks(), 10);
             },
 
             onDelete() {
