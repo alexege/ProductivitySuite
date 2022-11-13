@@ -1,10 +1,10 @@
 <template>
-    <div class="comment" style="outline: 1px solid red;">
+    <div class="comment" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
         <div class="comment-body" v-if="!showComment">
             {{ comment.title }}
         </div>
 
-        <div class="comment-actions" v-if="!showComment">
+        <div class="comment-actions" v-if="!showComment" v-show="isHovering">
             <button v-if="comment.isPublic">
                 <font-awesome-icon icon="unlock" @click="toggleCommentPrivacy(comment._id)"/>
             </button>
@@ -43,7 +43,7 @@ import { mapActions } from 'vuex'
                     title: this.comment.title
                 },
                 showComment: null,
-                // isHovering: false
+                isHovering: false
             }
         },
 
@@ -94,10 +94,12 @@ import { mapActions } from 'vuex'
 
     .comment {
         display: flex;
+        outline: 1px solid black;
     }
 
     .comment-body {
         flex: 2;
+        min-height: 40px;
     }
 
     .update-comment {

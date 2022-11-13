@@ -1,9 +1,11 @@
 <template>
     <div class="cont">
         <!-- <pre>{{ allNotebooks }}</pre> -->
-        <div class="sideNav">
 
-            <div v-for="notebook in allNotebooks" :key="notebook._id">
+        <div class="sideNav">
+            <button style="width: 100%;">Collapse all Notebooks</button>
+
+            <div v-for="notebook in allNotebooks" :key="notebook._id" >
                 <SidenavNotebook :subjects=notebook.subjects :notebook="notebook"/>
             </div>
             
@@ -448,11 +450,11 @@ export default {
   min-height: calc(100vh - 56px);
 }
 .main {
-  outline: 1px solid lime;
   display: flex;
   flex-direction: column;
   flex: 1;
   /* padding: 1rem; */
+  box-shadow: 2px 2px 5px black;
   max-height: calc(100vh - 56px);
   overflow: auto;
 }

@@ -1,11 +1,11 @@
 <template>
-    <div style="outline: 1px solid lime;">
+    <div class="category" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
         <div class="category-container">
             <div class="category-body" v-if="!showCategory">
                 {{ category.title }}
             </div>
 
-            <div class="category-actions" v-if="!showCategory">
+            <div class="category-actions" v-if="!showCategory" v-show="isHovering">
             <button v-if="category.isPublic">
                 <font-awesome-icon icon="unlock" @click="toggleCategoryPrivacy(category._id)"/>
             </button>
@@ -62,7 +62,8 @@
                 newCategory: {
                     title: this.category.title
                 },
-                showCategory: null
+                showCategory: null,
+                isHovering: false
             }
         },
 
@@ -134,10 +135,12 @@
 
     .category-body {
         flex: 2;
+        min-height: 40px;
     }
 
     .category-container {
        display: flex;
+       margin-left: 1em;
     }
 
     .update-category {

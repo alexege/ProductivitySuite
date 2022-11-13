@@ -1,11 +1,11 @@
 <template>
-    <div class="note">
-        <div class="note-container" style="outline:1px solid blue;">
+    <div class="note" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
+        <div class="note-container">
         <div class="note-body" v-if="!showNote">
             {{ note.title }}
         </div>
 
-        <div class="note-actions" v-if="!showNote">
+        <div class="note-actions" v-if="!showNote" v-show="isHovering">
             <button v-if="note.isPublic">
                 <font-awesome-icon icon="unlock" @click="toggleNotePrivacy(note._id)"/>
             </button>
@@ -65,6 +65,7 @@
                     title: this.note.title
                 },
                 showNote: null,
+                isHovering: false
             }
         },
 
@@ -139,10 +140,13 @@
     .note {
         display: flex;
         flex-direction: column;
+        box-shadow: 2px 2px 5px black;
+        margin: 10px;
     }
-
+    
     .note-body {
         flex: 2;
+        min-height: 40px;
     }
 
     .note-container {

@@ -1,10 +1,41 @@
 <template>
-    <div class="subject">
+    <div class="subject" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
         <div class="subject-container">
             <div class="subject-body" v-if="!showSubject">
                 {{ subject.title }}
             </div>
+
+            <!-- <div v-if="subject && subject.title" class="title">
+            <span class="indent-icon"></span>{{ subject.title }} -->
+        
+            <div class="subject-actions" v-if="!showSubject" v-show="isHovering">
+            <button v-if="subject.isPublic">
+                <font-awesome-icon icon="unlock" @click="toggleSubjectPrivacy(subject._id)"/>
+            </button>
+            <button v-else>
+                <font-awesome-icon icon="lock" @click="toggleSubjectPrivacy(subject._id)"/>
+            </button>
+
+            <button @click="showSubject = subject._id">
+                <font-awesome-icon icon="pen" />
+            </button>
+            <button @click="deleteSubject(subject._id)">
+                <font-awesome-icon icon="trash" />
+            </button>
         </div>
+
+        <div class="update-subject" v-show="showSubject == subject._id">
+          <input type="text" v-model="newSubject.title" />
+          <button @click="updateSubject(subject)">
+            <font-awesome-icon icon="upload" />
+          </button>
+          <button>
+            <font-awesome-icon icon="minus" @click="showSubject = null"/>
+          </button>
+        </div>
+
+    </div>
+
         <div v-for="category in categories" :key="category._id">
             <Category :notes="category.notes" :category="category"/>
         </div>
@@ -17,6 +48,7 @@
             </button>
         </div>
     </div>
+
 </template>
 <script>
     import { mapActions } from 'vuex';
@@ -33,13 +65,15 @@
                 newSubject: {
                     title: this.subject.title
                 },
-                showSubject: null
+                showSubject: null,
+                isHovering: false
             }
         },
 
         methods: {
             ...mapActions('notebook', ["fetchNotebooks"]),
             ...mapActions('category', ["addCategory"]),
+            ...mapActions('subject', ["deleteSubject"]),
             onSubmit() {
                 this.addCategory({
                     category: this.newCategory,
@@ -47,14 +81,47 @@
                 });
 
                 this.newCategory.title = '';
-                console.log("Submitting category");
                 setTimeout(() => this.fetchNotebooks(), 10);
+            },
+
+            onDelete() {
+                this.deleteSubject(this.subject._id);
+
+                setTimeout(() => this.fetchNotebooks(), 10);
+            },
+
+            toggleSubjectPrivacy(id) {
+                console.log("toggling subject privacy");
+                return this.$store
+                .dispatch("subject/toggleSubjectPrivacy", id)
+                .then(() => {
+                    setTimeout(() => this.fetchNotebooks(), 10);
+                })
+            },
+
+            updateSubject(subject) {
+                console.log("Updating subject: ", subject);
+                this.showSubject = null;
+
+                let updateSubject = {
+                    title: this.newSubject.title,
+                    isPublic: subject.isPublic,
+                };
+                //Toggle editMode if using a modal
+                return this.$store
+                    .dispatch("subject/updateSubject", {
+                    id: subject._id,
+                    subject: updateSubject,
+                })
+                .then(() => {
+                    setTimeout(() => this.fetchNotebooks(), 10);
+                });
             }
         }
     }
 </script>
 <style scoped>
-    div {
+    /* div {
         padding: .25em;
     }
 
@@ -64,5 +131,38 @@
 
     .add-category-container input {
         width: 100%;
+    } */
+
+    .add-category-container {
+    display: flex;
+   }
+
+   .add-category-container input, textarea {
+    width: 100%;
+   }
+
+   .subject {
+        display: flex;
+        flex-direction: column;
+        box-shadow: 2px 2px 5px black;
+        margin: 10px;
+    }
+
+    .subject-body {
+        flex: 2;
+        min-height: 40px;
+    }
+
+    .subject-container {
+       display: flex;
+    }
+
+    .update-subject {
+        display: flex;
+        flex: 1;
+    }
+
+    .update-subject input {
+        flex: 1;
     }
 </style>

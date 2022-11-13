@@ -1,7 +1,7 @@
 <template>
-    <div @mouseenter="isHovering = true" @mouseleave="isHovering = false" style="border: 1px solid red;">
+    <div @mouseenter="isHovering = true" @mouseleave="isHovering = false">
         <div v-if="notebook && notebook.title" class="title">
-            {{ notebook.title }}<hr>
+            <button>{{ notebook.title }}</button><hr>
         
         <div class="notebook-actions" v-show="isHovering">
             <button v-if="notebook.isPublic">
@@ -19,7 +19,6 @@
             </button>
         </div>
         </div>
-        
 
         <div class="update-notebook" v-show="showNotebook == notebook._id">
           <input type="text" v-model="newNotebook.title" />
@@ -130,6 +129,7 @@
         font-size: 0.8em;
     }
     .title {
+        padding-top: 20px;
         position: relative;
     }
     .notebook-actions {

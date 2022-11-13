@@ -1,11 +1,11 @@
 <template>
-    <div class="notebook">
+    <div class="notebook" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
         <div class="notebook-container">
             <div class="notebook-body" v-if="!showNotebook">
                 <h2 v-if="notebook && notebook.title">{{ notebook.title }}</h2>
             </div>
 
-            <div class="notebook-actions" v-if="!showNotebook">
+            <div class="notebook-actions" v-if="!showNotebook" v-show="isHovering">
             <button v-if="notebook.isPublic">
                 <font-awesome-icon icon="unlock" @click="toggleNotebookPrivacy(notebook._id)"/>
             </button>
@@ -62,7 +62,8 @@ import { mapActions } from 'vuex';
                 newNotebook: {
                     title: this.notebook.title
                 },
-                showNotebook: null
+                showNotebook: null,
+                isHovering: false
             }
         },
 
