@@ -3,10 +3,10 @@
         <!-- <pre>{{ allNotebooks }}</pre> -->
 
         <div class="sideNav">
-            <button style="width: 100%;">Collapse all Notebooks</button>
+            <!-- <button style="width: 100%;">Collapse all Notebooks</button> -->
 
             <div v-for="notebook in allNotebooks" :key="notebook._id" >
-                <SidenavNotebook :subjects=notebook.subjects :notebook="notebook"/>
+                <SidenavNotebook :subjects=notebook.subjects :notebook="notebook" :activeUser="activeUser"/>
             </div>
             
             <div v-if="allNotebooks && !allNotebooks.length > 0" >
@@ -59,7 +59,7 @@ export default {
         return {
             newNotebook: {
                 title: null,
-                description: null,
+                author: null
             },
             allSubjects: null,
             newSubject: {
@@ -94,7 +94,17 @@ export default {
         ...mapActions('notebook', ["fetchNotebooks", "addNotebook"]),
 
         onSubmit() {
-            this.addNotebook(this.newNotebook);
+
+            // console.log("store:", this.$store);
+            // let user = this.$store.state.auth.user;
+            // console.log("user is:", user);
+
+            // this.newNotebook.author = user;
+            // console.log("newNotebook:", this.newNotebook);
+            let user = this.$store.state.auth.user;
+
+            // this.addNotebook(this.newNotebook, user);
+            this.addNotebook({title: this.newNotebook.title, user});
             this.newNotebook.title = '';
         },
         
@@ -428,6 +438,10 @@ export default {
     },
     computed: {
        ...mapGetters('notebook', ["allNotebooks"]),
+
+       activeUser() {
+        return this.$store.state.auth.user;
+       }
     },
 
     created() {

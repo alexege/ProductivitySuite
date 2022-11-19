@@ -35,7 +35,7 @@
         </div>
 
         <!-- Add Category -->
-        <div class="add-category-container">
+        <div class="add-category-container" v-show="isHovering">
             <input type="text" v-model="newCategory.title" placeholder="Add Category" @keyup.enter="addCategory(subject._id)" />
             <button @click="addCategory(subject._id)">
                 <font-awesome-icon icon="check" />

@@ -23,8 +23,12 @@ export default {
         ...mapActions('notebook', ["addNotebook"]),
         onSubmit(e) {
             e.preventDefault();
+
+            let user = this.$store.state.auth.user;
+
             this.addNotebook({
-                title: this.newNotebook.title
+                title: this.newNotebook.title,
+                user
             });
             this.newNotebook.title = '';
         }

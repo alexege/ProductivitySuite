@@ -4,9 +4,6 @@
             <div class="subject-body" v-if="!showSubject">
                 {{ subject.title }}
             </div>
-
-            <!-- <div v-if="subject && subject.title" class="title">
-            <span class="indent-icon"></span>{{ subject.title }} -->
         
             <div class="subject-actions" v-if="!showSubject" v-show="isHovering">
             <button v-if="subject.isPublic">

@@ -19,12 +19,10 @@ class NotebookService {
 
   addNotebook(notebook) {
     console.log("Adding a notebook [services]: ", notebook);
-    const user = JSON.parse(localStorage.getItem("user"));
 
     return axios
       .post(API_URL + "addNotebook", {
         title: notebook.title,
-        description: notebook.description,
         author: user.id,
         isPublic: true,
       })

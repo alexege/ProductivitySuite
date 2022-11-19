@@ -17,6 +17,7 @@ export const notebook = {
         },
 
         async addNotebook({ commit }, notebook){
+            console.log("addNotebook[module]: ", notebook);
             const response = await axios.post('http://localhost:8080/api/notebook/addNotebook', notebook);
             commit("addNewNotebook", response.data);
         },

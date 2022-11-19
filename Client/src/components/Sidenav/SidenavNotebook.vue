@@ -1,9 +1,8 @@
 <template>
-    <div @mouseenter="isHovering = true" @mouseleave="isHovering = false">
+    <div @mouseenter="isHovering = true" @mouseleave="isHovering = false" class="sideNotebook" v-if="notebook.author == activeUser.id || notebook.isPublic">
         <div v-if="notebook && notebook.title" class="title">
-            <button>{{ notebook.title }}</button><hr>
-        
-        <div class="notebook-actions" v-show="isHovering">
+            <h6>{{ notebook.title }}</h6>
+        <div class="notebook-actions" v-show="isHovering" v-if="notebook.author == activeUser.id">
             <button v-if="notebook.isPublic">
                 <font-awesome-icon icon="unlock" @click="toggleNotebookPrivacy(notebook._id)"/>
             </button>
@@ -35,7 +34,7 @@
         </div>
 
         <!-- Add Subject -->
-        <div class="add-comment-container">
+        <div class="add-comment-container" v-show="isHovering">
             <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject(notebook._id)" />
             <button @click="addSubject(notebook._id)">
                 <font-awesome-icon icon="check" />
@@ -50,7 +49,7 @@
     export default {
         name: 'SidenavNotebook',
         components: {SidenavSubject},
-        props: ['subjects', 'notebook'],
+        props: ['subjects', 'notebook', 'activeUser'],
         data () {
             return {
                 newSubject: {
@@ -60,7 +59,7 @@
                     title: this.notebook.title
                 },
                 showNotebook: null,
-                isHovering: false
+                isHovering: false,
             }
         },
 
@@ -129,9 +128,21 @@
         font-size: 0.8em;
     }
     .title {
-        padding-top: 20px;
+        /* padding-top: 20px; */
         position: relative;
     }
+
+    .sideNotebook {
+        padding: 10px;
+        margin: 10px;
+        border: 2px solid black;
+        border-radius: 5px;
+    }
+
+    .sideNotebook h6 {
+        text-align: center;
+    }
+
     .notebook-actions {
         display: flex;
         justify-content: end;

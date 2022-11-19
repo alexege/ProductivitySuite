@@ -10,7 +10,8 @@ exports.allNotebooks = (req, res) => {
     }
     res.status(200).send(notebooks);
   })
-  .populate({ path: "subjects", 
+  .populate({ 
+    path: "subjects", 
     populate: {
       path: "categories",
       model: 'Category',
@@ -28,10 +29,15 @@ exports.allNotebooks = (req, res) => {
 };
 
 exports.addNotebook = (req, res) => {
-  console.log("adding notebook [controller]: ", req.body);
+
+  console.log("----- adding notebook [controller] ----- \n req.body:", req.body);
+
+  console.log("user:", req.body.user);
+
   const notebook = new Notebook({
     title: req.body.title,
-    description: req.body.description,
+    author: req.body.user.id,
+    // author: req.body.user,
     isPublic: req.body.isPublic
   });
 
@@ -42,6 +48,7 @@ exports.addNotebook = (req, res) => {
     }
 
     // if (req.body.author) {
+    //   console.log("author found!");
     //   User.findOne(
     //     {
     //       _id: { $in: req.body.author },
@@ -52,7 +59,8 @@ exports.addNotebook = (req, res) => {
     //         return;
     //       }
 
-    //       notebook.authorName = author;
+    //       notebook.author = author;
+    //       // notebook.authorName = author;
 
     //       notebook.save((err) => {
     //         if (err) {
@@ -62,9 +70,7 @@ exports.addNotebook = (req, res) => {
     //       });
 
     //       res.status(200).send({
-    //         name: notebook.name,
-    //         description: notebook.description,
-    //         author: author.username,
+    //         notebook
     //       });
     //     }
     //   );

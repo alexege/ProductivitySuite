@@ -1,11 +1,19 @@
 <template>
-    <div class="notebook" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
+    <div class="notebook" @mouseenter="isHovering = true" @mouseleave="isHovering = false" v-if="notebook.author == activeUser.id || notebook.isPublic">
         <div class="notebook-container">
             <div class="notebook-body" v-if="!showNotebook">
                 <h2 v-if="notebook && notebook.title">{{ notebook.title }}</h2>
             </div>
+            <!-- <span style="font-size: 14px">
+                <pre>
+                    {{ notebook }}
+                </pre>
+            </span> -->
+            <!-- Notebook Author: {{ notebook.author }}
+            Current User: {{ activeUser.id }} -->
 
-            <div class="notebook-actions" v-if="!showNotebook" v-show="isHovering">
+            <div class="notebook-actions" v-if="!showNotebook && notebook.author == activeUser.id" v-show="isHovering">
+
             <button v-if="notebook.isPublic">
                 <font-awesome-icon icon="unlock" @click="toggleNotebookPrivacy(notebook._id)"/>
             </button>
@@ -71,6 +79,7 @@ import { mapActions } from 'vuex';
             ...mapActions('notebook', ["fetchNotebooks", "deleteNotebook"]),
             ...mapActions('subject', ["addSubject"]),
             onSubmit() {
+
                 this.addSubject({
                     notebookId: this.notebook._id,
                     title: this.newSubject.title
@@ -114,6 +123,12 @@ import { mapActions } from 'vuex';
                 .then(() => {
                     setTimeout(() => this.fetchNotebooks(), 10);
                 });
+            }
+        },
+
+        computed: {
+            activeUser() {
+                return this.$store.state.auth.user;
             }
         },
 

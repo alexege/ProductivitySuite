@@ -4,7 +4,6 @@ const Notebook = mongoose.model(
     "Notebook",
     new mongoose.Schema({
         title: String,
-        description: String,
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
