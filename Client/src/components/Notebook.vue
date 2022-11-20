@@ -46,7 +46,7 @@
         </div>
 
         <!-- Add Subject -->
-        <form @submit.prevent="onSubmit" class="add-subject-container">
+        <form @submit.prevent="onSubmit" class="add-subject-container" v-if="notebook.author == activeUser.id">
             <input type="text" v-model="newSubject.title" placeholder="Add Subject" @keyup.enter="addSubject" />
             <button>
                 <font-awesome-icon icon="check" />

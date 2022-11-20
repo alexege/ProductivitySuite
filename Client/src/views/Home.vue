@@ -458,10 +458,12 @@ export default {
   overflow: auto;
 }
 .cont {
+  color: white;
   margin: 0;
   padding: 0;
   display: flex;
   min-height: calc(100vh - 56px);
+  background-color:rgba(53, 58, 64, 0.95);
 }
 .main {
   display: flex;

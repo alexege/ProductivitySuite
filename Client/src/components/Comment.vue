@@ -1,5 +1,16 @@
 <template>
-    <div class="comment" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
+    <div class="comment" @mouseenter.stop="isHovering = true" @mouseleave.stop="isHovering = false">
+        
+        <div class="user-profile">
+            <a href="">
+                <img src="https://media.istockphoto.com/id/522855255/vector/male-profile-flat-blue-simple-icon-with-long-shadow.jpg?s=612x612&w=0&k=20&c=EQa9pV1fZEGfGCW_aEK5X_Gyob8YuRcOYCYZeuBzztM=" alt="" style="width: 40px; height: 40px">
+            </a>
+            <a href="#">Comment Author</a>
+            <span>{{ updateDate(comment) }}</span>
+            <span>{{ updateTime(comment) }}</span>
+            <!-- <span>{{ Date(comment.updatedAt).toLocaleString('en-US', {dateStyle: "short", timeStyle: "short"}) }}</span> -->
+        </div>
+        
         <div class="comment-body" v-if="!showComment">
             {{ comment.title }}
         </div>
@@ -82,8 +93,19 @@ import { mapActions } from 'vuex'
                 .then(() => {
                     setTimeout(() => this.fetchNotebooks(), 10);
                 });
-            }
+            },
 
+            updateDate(date) {
+                let convertedDate = new Date(date.updatedAt);
+                let splitDate = convertedDate.toString().split(' ');
+                return `${splitDate[0]}, ${splitDate[1]}, ${splitDate[2]} ${splitDate[3]}` ;
+            },
+
+            updateTime(date) {
+                let convertedDate = new Date(date.updatedAt);
+                let splitDate = convertedDate.toString().split(' ');
+                return `${splitDate[4]}` ;
+            }
         }
     }
 </script>
@@ -109,5 +131,12 @@ import { mapActions } from 'vuex'
 
     .update-comment input {
         flex: 1;
+    }
+
+    .user-profile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 8px;
     }
 </style>
