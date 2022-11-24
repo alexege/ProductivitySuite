@@ -32,7 +32,7 @@
         </div>
 
         <div class="update-comment" v-show="showComment == comment._id">
-          <input type="text" v-model="newComment.title" />
+          <textarea type="text" v-model="newComment.title" ></textarea>
           <button @click="updateComment(comment)">
             <font-awesome-icon icon="upload" />
           </button>
@@ -117,6 +117,7 @@ import { mapActions } from 'vuex'
     .comment {
         display: flex;
         outline: 1px solid black;
+        white-space: pre-wrap;
     }
 
     .comment-body {
@@ -129,7 +130,7 @@ import { mapActions } from 'vuex'
         flex: 1;
     }
 
-    .update-comment input {
+    .update-comment input, .update-comment textarea {
         flex: 1;
     }
 

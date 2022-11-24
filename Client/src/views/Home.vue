@@ -450,6 +450,11 @@ export default {
 }
 </script>
 <style scoped>
+
+* {
+    font-size: 14px;
+}
+
 .sideNav {
   width: 300px;
   height: 100%;
